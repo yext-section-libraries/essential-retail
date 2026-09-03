@@ -1,0 +1,11 @@
+{
+  "id": "essential-retail",
+  "displayName": "Essential Retail",
+  "vertical": [
+    "RETAIL"
+  ],
+  "purpose": [
+    "LOCATION"
+  ],
+  "pageSetType": "ENTITY"
+}
