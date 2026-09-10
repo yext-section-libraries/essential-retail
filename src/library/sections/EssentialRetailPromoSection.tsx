@@ -7,22 +7,15 @@ import {
   ComprehensiveCTA,
   EntityField,
   Image,
-  MaybeRTF,
   VisibilityWrapper,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   getDefaultRTF,
   resolveComponentData,
-  ThemeOptions,
-  toPuckFields,
   useDocument,
   type ComprehensiveCTAValue,
-  type StyledTextValue,
   type ThemeColor,
   type TranslatableAssetImage,
-  type TranslatableRichText,
-  type TranslatableString,
   type YextComponentConfig,
   type YextEntityField,
   type YextFields,
@@ -32,108 +25,23 @@ import {
   type ComplexImageType,
   type ImageType,
 } from "@yext/pages-components";
+import {
+  aspectRatioOptions,
+  createCtaValue,
+  getRichTextStyleOverrides,
+  getScopedTypographyStyles,
+  getTextStyle,
+  hasImageSource,
+  renderRichText,
+  type StyledRtfProps,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const promoTypographyScopeClass = "yer-promo-typography";
 
-const promoTypographyStyles = `
-  .${promoTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${promoTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${promoTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${promoTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${promoTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${promoTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${promoTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${promoTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${promoTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${promoTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${promoTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
-
-type StyledRtfProps = {
-  text: YextEntityField<TranslatableRichText>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
+const promoTypographyStyles = getScopedTypographyStyles(
+  promoTypographyScopeClass,
+);
 
 type PromoProps = {
   promoImage: {
@@ -151,36 +59,6 @@ type PromoProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
-
-const buildRichTextStyleOverrides = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform: (styles.textTransform === "default"
-    ? "default"
-    : styles.textTransform) as
-    "default" | "none" | "uppercase" | "lowercase" | "capitalize",
-});
 
 const promoFields: YextFields<PromoProps> = {
   section: {
@@ -214,7 +92,7 @@ const promoFields: YextFields<PromoProps> = {
       aspectRatio: {
         type: "basicSelector",
         label: "Aspect Ratio",
-        options: ThemeOptions.ASPECT_RATIO,
+        options: aspectRatioOptions,
       },
       imageConstrain: {
         label: "Image Constrain",
@@ -272,42 +150,6 @@ const promoFields: YextFields<PromoProps> = {
   },
 };
 
-const makeCtaValue = (
-  label: string,
-  link: string,
-  eventName: string,
-): ComprehensiveCTAValue => ({
-  data: {
-    actionType: "link",
-    cta: {
-      field: "",
-      constantValue: {
-        label,
-        link,
-        linkType: "URL",
-        ctaType: "textAndLink",
-      },
-      constantValueEnabled: true,
-      selectedType: "textAndLink",
-    },
-    openInNewTab: false,
-  },
-  styles: {
-    variant: "primary",
-    color: undefined,
-    button: {
-      fontFamily: "default",
-      fontSize: "default",
-      fontWeight: "default",
-      fontStyle: "default",
-      textTransform: "default",
-      borderRadius: "default",
-      letterSpacing: "default",
-    },
-  },
-  eventName,
-});
-
 export const EssentialRetailPromoSectionComponent: PuckComponent<
   PromoProps
 > = ({ id, promoImage, heading, body, cta, section, puck }) => {
@@ -319,25 +161,13 @@ export const EssentialRetailPromoSectionComponent: PuckComponent<
     locale,
     streamDocument,
   );
-  const hasResolvedImage = Boolean(
-    resolvedImage &&
-    typeof resolvedImage === "object" &&
-    (("url" in resolvedImage &&
-      typeof resolvedImage.url === "string" &&
-      resolvedImage.url.trim()) ||
-      ("image" in resolvedImage &&
-        resolvedImage.image &&
-        typeof resolvedImage.image === "object" &&
-        "url" in resolvedImage.image &&
-        typeof resolvedImage.image.url === "string" &&
-        resolvedImage.image.url.trim())),
-  );
+  const hasResolvedImage = hasImageSource(resolvedImage);
   const resolvedHeading =
     resolveComponentData(heading.text, locale, streamDocument, {
       output: "plainText",
     }) ?? "";
   const bodyOverrides = {
-    ...buildRichTextStyleOverrides(
+    ...getRichTextStyleOverrides(
       body.styles,
       {
         family: "var(--fontFamily-body-fontFamily)",
@@ -349,9 +179,7 @@ export const EssentialRetailPromoSectionComponent: PuckComponent<
     lineHeight: 1.2,
     letterSpacing: "0.01em",
   };
-  const resolvedBody = resolveComponentData(body.text, locale, streamDocument, {
-    richTextStyleOverrides: bodyOverrides,
-  });
+  const resolvedBody = resolveComponentData(body.text, locale, streamDocument);
 
   return (
     <VisibilityWrapper
@@ -487,7 +315,7 @@ export const EssentialRetailPromoSectionComponent: PuckComponent<
             >
               <h2
                 className="yer-promo__heading"
-                style={buildTextStyle(
+                style={getTextStyle(
                   heading.styles,
                   {
                     family: "var(--fontFamily-h2-fontFamily)",
@@ -506,14 +334,7 @@ export const EssentialRetailPromoSectionComponent: PuckComponent<
               fieldId={body.text.field}
               constantValueEnabled={body.text.constantValueEnabled}
             >
-              {typeof resolvedBody === "string" ? (
-                <MaybeRTF
-                  data={resolvedBody}
-                  richTextStyleOverrides={bodyOverrides}
-                />
-              ) : (
-                resolvedBody
-              )}
+              {renderRichText(resolvedBody, bodyOverrides)}
             </EntityField>
             <div className="yer-promo__actions">
               <EntityField
@@ -536,7 +357,7 @@ export const EssentialRetailPromoSectionComponent: PuckComponent<
 export const EssentialRetailPromoSection: YextComponentConfig<PromoProps> =
   {
     label: "Promo Section",
-    fields: toPuckFields(promoFields),
+    fields: promoFields,
     defaultProps: {
       promoImage: {
         image: {
@@ -589,7 +410,11 @@ export const EssentialRetailPromoSection: YextComponentConfig<PromoProps> =
         },
         fontColor: undefined,
       },
-      cta: makeCtaValue("Shop Now", "#", "primaryCta"),
+      cta: createCtaValue({
+        label: "Shop Now",
+        link: "#",
+        eventName: "primaryCta",
+      }),
       section: {
         visibleOnLivePage: true,
         backgroundColor: {

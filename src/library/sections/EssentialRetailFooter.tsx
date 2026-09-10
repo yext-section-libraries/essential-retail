@@ -10,8 +10,6 @@ import {
   getSurfaceColorStyle,
   getThemeColorCssValue,
   resolveComponentData,
-  ThemeOptions,
-  toPuckFields,
   useDocument,
   type StyledImageValue,
   type StyledLinkValue,
@@ -23,6 +21,7 @@ import {
   type YextEntityField,
   type YextFields,
 } from "@yext/visual-editor";
+import { formatPhoneNumber } from "@yext/visual-editor/section-library-support";
 import {
   Address,
   AnalyticsScopeProvider,
@@ -30,97 +29,19 @@ import {
   type ComplexImageType,
   type ImageType,
 } from "@yext/pages-components";
+import {
+  aspectRatioOptions,
+  getScopedTypographyStyles,
+  getTextStyle,
+  hasImageSource,
+  resolveBorderRadius,
+} from "../shared/sectionHelpers";
 import { Link } from "@yext/pages-components";
-import { parsePhoneNumber } from "awesome-phonenumber";
 
 const footerTypographyScopeClass = "yer-footer-typography";
 
 const footerTypographyStyles = `
-  .${footerTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${footerTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${footerTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${footerTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${footerTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${footerTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${footerTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${footerTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${footerTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${footerTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${footerTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
+  ${getScopedTypographyStyles(footerTypographyScopeClass)}
   .${footerTypographyScopeClass} a.yer-footer__phoneLink {
     text-decoration: underline;
   }
@@ -315,7 +236,7 @@ const footerFields: YextFields<FooterProps> = {
       aspectRatio: {
         type: "basicSelector",
         label: "Aspect Ratio",
-        options: ThemeOptions.ASPECT_RATIO,
+        options: aspectRatioOptions,
       },
       imageConstrain: {
         label: "Image Constrain",
@@ -477,30 +398,6 @@ const FooterDefaultUtilityIcon = () => (
   </svg>
 );
 
-const hasImageSource = (
-  image: ImageType | ComplexImageType | TranslatableAssetImage | undefined,
-): boolean => {
-  if (!image || typeof image !== "object") {
-    return false;
-  }
-
-  if ("url" in image && typeof image.url === "string" && image.url.trim()) {
-    return true;
-  }
-
-  return Boolean(
-    "image" in image &&
-    image.image &&
-    typeof image.image === "object" &&
-    "url" in image.image &&
-    typeof image.image.url === "string" &&
-    image.image.url.trim(),
-  );
-};
-
-const resolveBorderRadius = (value?: string): string | undefined =>
-  !value || value === "default" ? undefined : value;
-
 const renderSocialIcon = (
   iconImage: ImageType | ComplexImageType | TranslatableAssetImage | undefined,
   styles: StyledImageValue,
@@ -534,19 +431,6 @@ const renderSocialIcon = (
   );
 };
 
-const buildTextStyle = (
-  styles: StyledTextValue,
-  color: ThemeColor | undefined,
-): React.CSSProperties => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? undefined : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? undefined : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? undefined : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? undefined : styles.textTransform,
-});
-
 const buildLinkStyle = (
   styles: StyledLinkValue,
   color: ThemeColor | undefined,
@@ -563,33 +447,26 @@ const buildLinkStyle = (
   textDecoration: "none",
 });
 
-const buildLogoFrameStyle = (logoImage: FooterProps["logoImage"]) => ({
-  aspectRatio: logoImage.aspectRatio > 0 ? logoImage.aspectRatio : undefined,
-  borderRadius:
-    logoImage.styles.borderRadius === "default"
-      ? undefined
-      : logoImage.styles.borderRadius,
-  overflow:
-    logoImage.imageConstrain === "filled" ||
-    logoImage.styles.borderRadius !== "default"
-      ? "hidden"
-      : undefined,
-});
+const buildLogoFrameStyle = (
+  logoImage: FooterProps["logoImage"],
+): React.CSSProperties => {
+  const aspectRatio = logoImage.aspectRatio > 0 ? logoImage.aspectRatio : 1;
 
-const formatPhoneNumber = (
-  phoneNumberString: string,
-  format: "international" | "domestic",
-) => {
-  const cleaned = phoneNumberString.replace(/(?!^\+)\+|[^\d+]/g, "");
-  const parsed = parsePhoneNumber(cleaned);
-
-  if (!parsed.valid || !parsed.number) {
-    return phoneNumberString;
-  }
-
-  return format === "international"
-    ? parsed.number.international
-    : parsed.number.national;
+  return {
+    aspectRatio,
+    width: Math.min(72 * aspectRatio, 240),
+    height: 72,
+    maxWidth: "100%",
+    borderRadius:
+      logoImage.styles.borderRadius === "default"
+        ? undefined
+        : logoImage.styles.borderRadius,
+    overflow:
+      logoImage.imageConstrain === "filled" ||
+      logoImage.styles.borderRadius !== "default"
+        ? "hidden"
+        : undefined,
+  };
 };
 
 export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
@@ -718,6 +595,7 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
                 align-items: center;
                 justify-content: center;
                 height: 72px;
+                max-width: 240px;
                 margin-bottom: 30px;
                 text-decoration: none;
                 flex-shrink: 0;
@@ -725,8 +603,7 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
 
               .yer-footer__logoFrame {
                 display: inline-flex;
-                width: auto;
-                height: 100%;
+                flex: none;
                 overflow: hidden;
               }
 
@@ -929,8 +806,9 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
                 >
                   <div
                     className="yer-footer__legalText"
-                    style={buildTextStyle(
+                    style={getTextStyle(
                       bodyTextStyles.styles,
+                      undefined,
                       bodyTextStyles.fontColor,
                     )}
                   >
@@ -959,8 +837,9 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
                         {phones.includeHyperlink && item.telDigits ? (
                           <span
                             className="yer-footer__legalText"
-                            style={buildTextStyle(
+                            style={getTextStyle(
                               bodyTextStyles.styles,
+                              undefined,
                               bodyTextStyles.fontColor,
                             )}
                           >
@@ -971,8 +850,9 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
                                 linkType: "PHONE",
                               }}
                               className="yer-footer__phoneLink"
-                              style={buildTextStyle(
+                              style={getTextStyle(
                                 bodyTextStyles.styles,
+                                undefined,
                                 bodyTextStyles.fontColor,
                               )}
                             >
@@ -982,8 +862,9 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
                         ) : (
                           <span
                             className="yer-footer__legalText"
-                            style={buildTextStyle(
+                            style={getTextStyle(
                               bodyTextStyles.styles,
+                              undefined,
                               bodyTextStyles.fontColor,
                             )}
                           >
@@ -1005,7 +886,7 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
 
 export const EssentialRetailFooter: YextComponentConfig<FooterProps> = {
   label: "Footer",
-  fields: toPuckFields(footerFields),
+  fields: footerFields,
   defaultProps: {
     logoImage: {
       image: {

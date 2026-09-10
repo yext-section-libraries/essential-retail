@@ -12,112 +12,24 @@ import {
   getThemeColorCssValue,
   ReviewStars,
   resolveComponentData,
-  toPuckFields,
   useDocument,
   type StyledTextValue,
   type ThemeColor,
-  type TranslatableString,
   type YextComponentConfig,
-  type YextEntityField,
   type YextFields,
 } from "@yext/visual-editor";
 import { AnalyticsScopeProvider } from "@yext/pages-components";
+import {
+  getScopedTypographyStyles,
+  getTextStyle,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const reviewsTypographyScopeClass = "yer-reviews-typography";
 
-const reviewsTypographyStyles = `
-  .${reviewsTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${reviewsTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${reviewsTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${reviewsTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${reviewsTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${reviewsTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${reviewsTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${reviewsTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${reviewsTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${reviewsTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${reviewsTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
+const reviewsTypographyStyles = getScopedTypographyStyles(
+  reviewsTypographyScopeClass,
+);
 
 type ReviewTextStylesProps = {
   styles: StyledTextValue;
@@ -159,20 +71,6 @@ const fallbackReviews: ReviewRecord[] = [
       "Helpful associates, quick checkout, and a relaxed shopping experience. I will definitely come back.",
   },
 ];
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
 
 const reviewsFields: YextFields<ReviewsProps> = {
   section: {
@@ -516,7 +414,7 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
             >
               <h2
                 className="yer-reviews__heading"
-                style={buildTextStyle(
+                style={getTextStyle(
                   heading.styles,
                   {
                     family: "var(--fontFamily-h2-fontFamily)",
@@ -558,7 +456,7 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
                       <div className="yer-reviews__reviewHeader">
                         <h3
                           className="yer-reviews__reviewName"
-                          style={buildTextStyle(
+                          style={getTextStyle(
                             reviewHeadingStyles.styles,
                             {
                               family: "var(--fontFamily-h3-fontFamily)",
@@ -580,7 +478,7 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
                       </div>
                       <p
                         className="yer-reviews__reviewText"
-                        style={buildTextStyle(
+                        style={getTextStyle(
                           reviewBodyStyles.styles,
                           {
                             family: "var(--fontFamily-body-fontFamily)",
@@ -614,7 +512,7 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
 export const EssentialRetailReviewsSection: YextComponentConfig<ReviewsProps> =
   {
     label: "Reviews Section",
-    fields: toPuckFields(reviewsFields),
+    fields: reviewsFields,
     defaultProps: {
       heading: {
         text: {

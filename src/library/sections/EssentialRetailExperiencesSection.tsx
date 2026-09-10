@@ -11,10 +11,8 @@ import {
   createItemSource,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   getDefaultRTF,
   resolveComponentData,
-  ThemeOptions,
   toPuckFields,
   useDocument,
   type ComprehensiveCTAValue,
@@ -34,102 +32,21 @@ import {
   type ComplexImageType,
   type ImageType,
 } from "@yext/pages-components";
+import {
+  aspectRatioOptions,
+  getRichTextStyleOverrides,
+  getScopedTypographyStyles,
+  getTextStyle,
+  hasImageSource,
+  renderRichText,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const experiencesTypographyScopeClass = "yer-experiences-typography";
 
-const experiencesTypographyStyles = `
-  .${experiencesTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${experiencesTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${experiencesTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${experiencesTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${experiencesTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${experiencesTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${experiencesTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${experiencesTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${experiencesTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${experiencesTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${experiencesTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
+const experiencesTypographyStyles = getScopedTypographyStyles(
+  experiencesTypographyScopeClass,
+);
 
 type CardTextStylesProps = {
   styles: StyledTextValue;
@@ -163,44 +80,6 @@ type ExperiencesProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
-
-const buildRichTextStyleOverrides = (
-  styles: StyledTextValue | undefined,
-  vars: { family: string; size: string; weight: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily:
-    !styles || styles.fontFamily === "default"
-      ? vars.family
-      : styles.fontFamily,
-  fontSize:
-    !styles || styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight:
-    !styles || styles.fontWeight === "default"
-      ? vars.weight
-      : styles.fontWeight,
-  fontStyle:
-    !styles || styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform: (!styles || styles.textTransform === "default"
-    ? "default"
-    : styles.textTransform) as
-    "default" | "none" | "uppercase" | "lowercase" | "capitalize",
-});
 
 const makeExperienceCard = (
   imageUrl: string,
@@ -372,7 +251,7 @@ const experiencesFields: YextFields<ExperiencesProps> = {
           aspectRatio: {
             type: "basicSelector",
             label: "Aspect Ratio",
-            options: ThemeOptions.ASPECT_RATIO,
+            options: aspectRatioOptions,
           },
           imageConstrain: {
             label: "Image Constrain",
@@ -466,19 +345,7 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
   );
   const cardsWithResolvedImages = resolvedCards.map((card) => {
     const resolvedImage = card.image;
-    const hasResolvedImage = Boolean(
-      resolvedImage &&
-      typeof resolvedImage === "object" &&
-      (("url" in resolvedImage &&
-        typeof resolvedImage.url === "string" &&
-        resolvedImage.url.trim()) ||
-        ("image" in resolvedImage &&
-          resolvedImage.image &&
-          typeof resolvedImage.image === "object" &&
-          "url" in resolvedImage.image &&
-          typeof resolvedImage.image.url === "string" &&
-          resolvedImage.image.url.trim())),
-    );
+    const hasResolvedImage = hasImageSource(resolvedImage);
 
     return {
       card,
@@ -615,7 +482,7 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
               constantValueEnabled={heading.text.constantValueEnabled}
             >
               <h2
-                style={buildTextStyle(
+                style={getTextStyle(
                   heading.styles,
                   {
                     family: "var(--fontFamily-h2-fontFamily)",
@@ -647,23 +514,17 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
                           },
                         ) ?? "")
                       : "";
+                    const bodyStyleOverrides = getRichTextStyleOverrides(
+                      cardStyles.descriptionTextStyles.styles,
+                      {
+                        family: "var(--fontFamily-body-fontFamily)",
+                        size: "var(--fontSize-body-fontSize)",
+                        weight: "var(--fontWeight-body-fontWeight)",
+                      },
+                      cardStyles.descriptionTextStyles.fontColor,
+                    );
                     const resolvedBody = card.body
-                      ? resolveComponentData(
-                          card.body,
-                          locale,
-                          streamDocument,
-                          {
-                            richTextStyleOverrides: buildRichTextStyleOverrides(
-                              cardStyles.descriptionTextStyles.styles,
-                              {
-                                family: "var(--fontFamily-body-fontFamily)",
-                                size: "var(--fontSize-body-fontSize)",
-                                weight: "var(--fontWeight-body-fontWeight)",
-                              },
-                              cardStyles.descriptionTextStyles.fontColor,
-                            ),
-                          },
-                        )
+                      ? resolveComponentData(card.body, locale, streamDocument)
                       : undefined;
                     const ctaValue: Partial<ComprehensiveCTAValue> | undefined =
                       card.cta
@@ -741,7 +602,7 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
                           : null}
                         <h3
                           className="yer-experiences__title"
-                          style={buildTextStyle(
+                          style={getTextStyle(
                             cardStyles.headingTextStyles.styles,
                             {
                               family: "var(--fontFamily-h3-fontFamily)",
@@ -757,7 +618,7 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
                         </h3>
                         <div className="yer-experiences__body">
                           <div className="yer-experiences__copy">
-                            {resolvedBody}
+                            {renderRichText(resolvedBody, bodyStyleOverrides)}
                           </div>
                           {ctaValue ? (
                             <div className="yer-experiences__cta">
@@ -781,7 +642,7 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
 export const EssentialRetailExperiencesSection: YextComponentConfig<ExperiencesProps> =
   {
     label: "Experiences Section",
-    fields: toPuckFields(experiencesFields),
+    fields: experiencesFields,
     resolveFields: (data) => {
       const fields = toPuckFields(experiencesFields) as any;
       const variant = data.props.cardStyles?.ctaStyles?.variant;

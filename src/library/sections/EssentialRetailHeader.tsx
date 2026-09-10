@@ -11,6 +11,12 @@ import {
   useAnalytics,
 } from "@yext/pages-components";
 import {
+  aspectRatioOptions,
+  getScopedLinkStyles,
+  hasImageSource,
+  resolveBorderRadius,
+} from "../shared/sectionHelpers";
+import {
   Background,
   ComprehensiveCTA,
   type ComprehensiveCTAValue,
@@ -33,27 +39,14 @@ import {
   i18nComponentsInstance,
   normalizeLink,
   resolveComponentData,
-  ThemeOptions,
   useDocument,
 } from "@yext/visual-editor";
 
 const headerTypographyScopeClass = "yer-header-typography";
 
-const headerLinkTypographyStyles = `
-  .${headerTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${headerTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
+const headerLinkTypographyStyles = getScopedLinkStyles(
+  headerTypographyScopeClass,
+);
 
 type SharedHeaderVariant =
   | "centerLogoSplitNav"
@@ -175,14 +168,6 @@ const hasExplicitThemeColor = (color?: ThemeColor): color is ThemeColor => {
   return Boolean(color?.selectedColor && color.selectedColor !== "default");
 };
 
-const resolveBorderRadius = (value?: string): string | undefined => {
-  if (!value || value === "default") {
-    return undefined;
-  }
-
-  return value;
-};
-
 const getTextStyles = ({
   color,
   styles,
@@ -256,31 +241,6 @@ const normalizeResolvedLink = ({
   }
 
   return normalizeLink(link, linkType);
-};
-
-const hasImageSource = (
-  image: ImageType | ComplexImageType | TranslatableAssetImage | undefined,
-): boolean => {
-  if (!image || typeof image !== "object") {
-    return false;
-  }
-
-  if ("url" in image && typeof image.url === "string" && image.url.trim()) {
-    return true;
-  }
-
-  if (
-    "image" in image &&
-    image.image &&
-    typeof image.image === "object" &&
-    "url" in image.image &&
-    typeof image.image.url === "string" &&
-    image.image.url.trim()
-  ) {
-    return true;
-  }
-
-  return false;
 };
 
 const SharedHeaderDefaultUtilityIcon = () => (
@@ -427,7 +387,7 @@ const EssentialRetailHeaderFields: YextFields<EssentialRetailHeaderProps> =
                 aspectRatio: {
                   label: "Aspect Ratio",
                   type: "basicSelector",
-                  options: ThemeOptions.ASPECT_RATIO,
+                  options: aspectRatioOptions,
                 },
                 imageConstrain: {
                   label: "Image Constrain",
@@ -577,7 +537,7 @@ const EssentialRetailHeaderFields: YextFields<EssentialRetailHeaderProps> =
         aspectRatio: {
           label: "Aspect Ratio",
           type: "basicSelector",
-          options: ThemeOptions.ASPECT_RATIO,
+          options: aspectRatioOptions,
         },
         imageConstrain: {
           label: "Image Constrain",

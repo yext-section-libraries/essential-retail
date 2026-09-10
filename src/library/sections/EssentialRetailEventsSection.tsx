@@ -7,20 +7,13 @@ import {
   ComprehensiveCTA,
   EntityField,
   Image,
-  MaybeRTF,
   VisibilityWrapper,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   resolveComponentData,
-  toPuckFields,
   useDocument,
   type ComprehensiveCTAValue,
-  type StyledTextValue,
-  type ThemeColor,
   type TranslatableAssetImage,
-  type TranslatableRichText,
-  type TranslatableString,
   type YextComponentConfig,
   type YextEntityField,
   type YextFields,
@@ -30,108 +23,22 @@ import {
   type ComplexImageType,
   type ImageType,
 } from "@yext/pages-components";
+import {
+  createCtaValue,
+  getRichTextStyleOverrides,
+  getScopedTypographyStyles,
+  getTextStyle,
+  hasImageSource,
+  renderRichText,
+  type StyledRtfProps,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const eventsTypographyScopeClass = "yer-events-typography";
 
-const eventsTypographyStyles = `
-  .${eventsTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${eventsTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${eventsTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${eventsTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${eventsTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${eventsTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${eventsTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${eventsTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${eventsTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${eventsTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${eventsTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
-
-type StyledRtfProps = {
-  text: YextEntityField<TranslatableRichText>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
+const eventsTypographyStyles = getScopedTypographyStyles(
+  eventsTypographyScopeClass,
+);
 
 type EventsProps = {
   backgroundImage: {
@@ -146,36 +53,6 @@ type EventsProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
-
-const buildRichTextStyleOverrides = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform: (styles.textTransform === "default"
-    ? "default"
-    : styles.textTransform) as
-    "default" | "none" | "uppercase" | "lowercase" | "capitalize",
-});
 
 const eventsFields: YextFields<EventsProps> = {
   section: {
@@ -249,42 +126,6 @@ const eventsFields: YextFields<EventsProps> = {
   },
 };
 
-const makeCtaValue = (
-  label: string,
-  link: string,
-  eventName: string,
-): ComprehensiveCTAValue => ({
-  data: {
-    actionType: "link",
-    cta: {
-      field: "",
-      constantValue: {
-        label,
-        link,
-        linkType: "URL",
-        ctaType: "textAndLink",
-      },
-      constantValueEnabled: true,
-      selectedType: "textAndLink",
-    },
-    openInNewTab: false,
-  },
-  styles: {
-    variant: "primary",
-    color: undefined,
-    button: {
-      fontFamily: "default",
-      fontSize: "default",
-      fontWeight: "default",
-      fontStyle: "default",
-      textTransform: "default",
-      borderRadius: "default",
-      letterSpacing: "default",
-    },
-  },
-  eventName,
-});
-
 export const EssentialRetailEventsSectionComponent: PuckComponent<
   EventsProps
 > = ({ id, backgroundImage, heading, body, cta, section, puck }) => {
@@ -296,25 +137,13 @@ export const EssentialRetailEventsSectionComponent: PuckComponent<
     locale,
     streamDocument,
   );
-  const hasResolvedImage = Boolean(
-    resolvedImage &&
-    typeof resolvedImage === "object" &&
-    (("url" in resolvedImage &&
-      typeof resolvedImage.url === "string" &&
-      resolvedImage.url.trim()) ||
-      ("image" in resolvedImage &&
-        resolvedImage.image &&
-        typeof resolvedImage.image === "object" &&
-        "url" in resolvedImage.image &&
-        typeof resolvedImage.image.url === "string" &&
-        resolvedImage.image.url.trim())),
-  );
+  const hasResolvedImage = hasImageSource(resolvedImage);
   const resolvedHeading =
     resolveComponentData(heading.text, locale, streamDocument, {
       output: "plainText",
     }) ?? "";
   const bodyOverrides = {
-    ...buildRichTextStyleOverrides(
+    ...getRichTextStyleOverrides(
       body.styles,
       {
         family: "var(--fontFamily-body-fontFamily)",
@@ -326,9 +155,7 @@ export const EssentialRetailEventsSectionComponent: PuckComponent<
     lineHeight: 1.2,
     letterSpacing: "0.01em",
   };
-  const resolvedBody = resolveComponentData(body.text, locale, streamDocument, {
-    richTextStyleOverrides: bodyOverrides,
-  });
+  const resolvedBody = resolveComponentData(body.text, locale, streamDocument);
 
   return (
     <VisibilityWrapper
@@ -453,7 +280,7 @@ export const EssentialRetailEventsSectionComponent: PuckComponent<
               >
                 <h2
                   className="yer-events__heading"
-                  style={buildTextStyle(
+                  style={getTextStyle(
                     heading.styles,
                     {
                       family: "var(--fontFamily-h2-fontFamily)",
@@ -472,14 +299,7 @@ export const EssentialRetailEventsSectionComponent: PuckComponent<
                 fieldId={body.text.field}
                 constantValueEnabled={body.text.constantValueEnabled}
               >
-                {typeof resolvedBody === "string" ? (
-                  <MaybeRTF
-                    data={resolvedBody}
-                    richTextStyleOverrides={bodyOverrides}
-                  />
-                ) : (
-                  resolvedBody
-                )}
+                {renderRichText(resolvedBody, bodyOverrides)}
               </EntityField>
               <div className="yer-events__actions">
                 <EntityField
@@ -503,7 +323,7 @@ export const EssentialRetailEventsSectionComponent: PuckComponent<
 export const EssentialRetailEventsSection: YextComponentConfig<EventsProps> =
   {
     label: "Events Section",
-    fields: toPuckFields(eventsFields),
+    fields: eventsFields,
     defaultProps: {
       backgroundImage: {
         image: {
@@ -555,7 +375,11 @@ export const EssentialRetailEventsSection: YextComponentConfig<EventsProps> =
         },
         fontColor: undefined,
       },
-      cta: makeCtaValue("Join Mailing List", "#", "primaryCta"),
+      cta: createCtaValue({
+        label: "Join Mailing List",
+        link: "#",
+        eventName: "primaryCta",
+      }),
       section: {
         visibleOnLivePage: true,
       },

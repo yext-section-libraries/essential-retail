@@ -9,9 +9,7 @@ import {
   VisibilityWrapper,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   resolveComponentData,
-  toPuckFields,
   useDocument,
   type ComprehensiveCTAValue,
   type StyledTextValue,
@@ -21,6 +19,7 @@ import {
   type YextEntityField,
   type YextFields,
 } from "@yext/visual-editor";
+import { formatPhoneNumber } from "@yext/visual-editor/section-library-support";
 import {
   Address,
   AnalyticsScopeProvider,
@@ -31,94 +30,19 @@ import {
   type HoursType,
 } from "@yext/pages-components";
 import { parsePhoneNumber } from "awesome-phonenumber";
+import {
+  createCtaValue,
+  getScopedTypographyStyles,
+  getTextStyle,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const storeDetailsTypographyScopeClass = "yer-store-details-typography";
 
 const storeDetailsTypographyStyles = `
-  .${storeDetailsTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
+  ${getScopedTypographyStyles(storeDetailsTypographyScopeClass)}
   .${storeDetailsTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
     font-size: 16px;
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${storeDetailsTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${storeDetailsTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
   }
   .${storeDetailsTypographyScopeClass} address,
   .${storeDetailsTypographyScopeClass} .yer-store-details__bodyText,
@@ -141,12 +65,6 @@ const storeDetailsTypographyStyles = `
     text-decoration: none;
   }
 `;
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
 
 type StyledTextListProps = {
   text: YextEntityField<TranslatableString[]>;
@@ -206,20 +124,6 @@ type StoreDetailsProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
 
 const makeSubheadingDefault = (text: string): StyledTextProps => ({
   text: {
@@ -535,22 +439,6 @@ const storeDetailsFields: YextFields<StoreDetailsProps> = {
   },
 };
 
-const formatPhoneNumber = (
-  phoneNumberString: string,
-  format: "international" | "domestic",
-) => {
-  const cleaned = phoneNumberString.replace(/(?!^\+)\+|[^\d+]/g, "");
-  const parsed = parsePhoneNumber(cleaned);
-
-  if (!parsed.valid || !parsed.number) {
-    return phoneNumberString;
-  }
-
-  return format === "international"
-    ? parsed.number.international
-    : parsed.number.national;
-};
-
 const getPhoneLink = (phoneNumberString: string): string | undefined => {
   const cleaned = phoneNumberString.replace(/(?!^\+)\+|[^\d+]/g, "");
   const telDigits = cleaned.replace(/\D/g, "");
@@ -566,44 +454,6 @@ const getPhoneLink = (phoneNumberString: string): string | undefined => {
 
   return telDigits;
 };
-
-const makeCtaValue = (
-  label: string,
-  link: string,
-  variant: "primary" | "secondary",
-  color: ThemeColor,
-  eventName: string,
-): ComprehensiveCTAValue => ({
-  data: {
-    actionType: "link",
-    cta: {
-      field: "",
-      constantValue: {
-        label,
-        link,
-        linkType: "URL",
-        ctaType: label === "Get Directions" ? "getDirections" : "textAndLink",
-      },
-      constantValueEnabled: true,
-      selectedType: "textAndLink",
-    },
-    openInNewTab: false,
-  },
-  styles: {
-    variant,
-    color,
-    button: {
-      fontFamily: "default",
-      fontSize: "default",
-      fontWeight: "default",
-      fontStyle: "default",
-      textTransform: "default",
-      borderRadius: "default",
-      letterSpacing: "default",
-    },
-  },
-  eventName,
-});
 
 export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
   StoreDetailsProps
@@ -878,7 +728,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
             >
               <h2
                 className="yer-store-details__title"
-                style={buildTextStyle(
+                style={getTextStyle(
                   heading.styles,
                   {
                     family: "var(--fontFamily-h2-fontFamily)",
@@ -903,7 +753,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                 >
                   <h3
                     className="yer-store-details__cardTitle"
-                    style={buildTextStyle(
+                    style={getTextStyle(
                       headings.styles,
                       {
                         family: "var(--fontFamily-h3-fontFamily)",
@@ -928,7 +778,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                   >
                     <h4
                       className="yer-store-details__label"
-                      style={buildTextStyle(
+                      style={getTextStyle(
                         address.heading.styles,
                         {
                           family: "var(--fontFamily-h4-fontFamily)",
@@ -970,7 +820,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                   >
                     <h4
                       className="yer-store-details__label"
-                      style={buildTextStyle(
+                      style={getTextStyle(
                         phones.heading.styles,
                         {
                           family: "var(--fontFamily-h4-fontFamily)",
@@ -1053,7 +903,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                 >
                   <h3
                     className="yer-store-details__cardTitle"
-                    style={buildTextStyle(
+                    style={getTextStyle(
                       headings.styles,
                       {
                         family: "var(--fontFamily-h3-fontFamily)",
@@ -1105,7 +955,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                 >
                   <h3
                     className="yer-store-details__cardTitle"
-                    style={buildTextStyle(
+                    style={getTextStyle(
                       headings.styles,
                       {
                         family: "var(--fontFamily-h3-fontFamily)",
@@ -1126,7 +976,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                 >
                   <ul
                     className="yer-store-details__services"
-                    style={buildTextStyle(
+                    style={getTextStyle(
                       services.styles,
                       {
                         family: "var(--fontFamily-body-fontFamily)",
@@ -1156,7 +1006,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
 export const EssentialRetailStoreDetailsSection: YextComponentConfig<StoreDetailsProps> =
   {
     label: "Store Details Section",
-    fields: toPuckFields(storeDetailsFields),
+    fields: storeDetailsFields,
     defaultProps: {
       heading: {
         text: {
@@ -1274,26 +1124,26 @@ export const EssentialRetailStoreDetailsSection: YextComponentConfig<StoreDetail
         },
         fontColor: undefined,
       },
-      websiteCta: makeCtaValue(
-        "Visit Website",
-        "#",
-        "primary",
-        {
+      websiteCta: createCtaValue({
+        label: "Visit Website",
+        link: "#",
+        variant: "primary",
+        color: {
           selectedColor: "palette-primary",
           contrastingColor: "palette-primary-contrast",
         },
-        "primaryCta",
-      ),
-      directionsCta: makeCtaValue(
-        "Get Directions",
-        "#",
-        "secondary",
-        {
+        eventName: "primaryCta",
+      }),
+      directionsCta: createCtaValue({
+        label: "Get Directions",
+        link: "#",
+        variant: "secondary",
+        color: {
           selectedColor: "palette-primary",
           contrastingColor: "palette-primary-contrast",
         },
-        "secondaryCta",
-      ),
+        eventName: "secondaryCta",
+      }),
       section: {
         visibleOnLivePage: true,
         backgroundColor: {

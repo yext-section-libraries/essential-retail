@@ -6,20 +6,13 @@ import {
   Background,
   EntityField,
   Image,
-  MaybeRTF,
   VisibilityWrapper,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   resolveComponentData,
-  ThemeOptions,
-  toPuckFields,
   useDocument,
-  type StyledTextValue,
   type ThemeColor,
   type TranslatableAssetImage,
-  type TranslatableRichText,
-  type TranslatableString,
   type YextComponentConfig,
   type YextEntityField,
   type YextFields,
@@ -29,108 +22,22 @@ import {
   type ComplexImageType,
   type ImageType,
 } from "@yext/pages-components";
+import {
+  aspectRatioOptions,
+  getRichTextStyleOverrides,
+  getScopedTypographyStyles,
+  getTextStyle,
+  hasImageSource,
+  renderRichText,
+  type StyledRtfProps,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const aboutTypographyScopeClass = "yer-about-typography";
 
-const aboutTypographyStyles = `
-  .${aboutTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${aboutTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${aboutTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${aboutTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${aboutTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${aboutTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${aboutTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${aboutTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${aboutTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${aboutTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${aboutTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
-
-type StyledRtfProps = {
-  text: YextEntityField<TranslatableRichText>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
+const aboutTypographyStyles = getScopedTypographyStyles(
+  aboutTypographyScopeClass,
+);
 
 type AboutProps = {
   heading: StyledTextProps;
@@ -147,36 +54,6 @@ type AboutProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
-
-const buildRichTextStyleOverrides = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform: (styles.textTransform === "default"
-    ? "default"
-    : styles.textTransform) as
-    "default" | "none" | "uppercase" | "lowercase" | "capitalize",
-});
 
 const aboutFields: YextFields<AboutProps> = {
   section: {
@@ -250,7 +127,7 @@ const aboutFields: YextFields<AboutProps> = {
       aspectRatio: {
         type: "basicSelector",
         label: "Aspect Ratio",
-        options: ThemeOptions.ASPECT_RATIO,
+        options: aspectRatioOptions,
       },
       imageConstrain: {
         label: "Image Constrain",
@@ -279,21 +156,9 @@ export const EssentialRetailAboutSectionComponent: PuckComponent<
     locale,
     streamDocument,
   );
-  const hasResolvedImage = Boolean(
-    resolvedImage &&
-    typeof resolvedImage === "object" &&
-    (("url" in resolvedImage &&
-      typeof resolvedImage.url === "string" &&
-      resolvedImage.url.trim()) ||
-      ("image" in resolvedImage &&
-        resolvedImage.image &&
-        typeof resolvedImage.image === "object" &&
-        "url" in resolvedImage.image &&
-        typeof resolvedImage.image.url === "string" &&
-        resolvedImage.image.url.trim())),
-  );
+  const hasResolvedImage = hasImageSource(resolvedImage);
   const bodyOverrides = {
-    ...buildRichTextStyleOverrides(
+    ...getRichTextStyleOverrides(
       body.styles,
       {
         family: "var(--fontFamily-body-fontFamily)",
@@ -305,9 +170,7 @@ export const EssentialRetailAboutSectionComponent: PuckComponent<
     lineHeight: 1.2,
     letterSpacing: "0.01em",
   };
-  const resolvedBody = resolveComponentData(body.text, locale, streamDocument, {
-    richTextStyleOverrides: bodyOverrides,
-  });
+  const resolvedBody = resolveComponentData(body.text, locale, streamDocument);
 
   return (
     <VisibilityWrapper
@@ -419,7 +282,7 @@ export const EssentialRetailAboutSectionComponent: PuckComponent<
             >
               <h2
                 className="yer-about__heading"
-                style={buildTextStyle(
+                style={getTextStyle(
                   heading.styles,
                   {
                     family: "var(--fontFamily-h2-fontFamily)",
@@ -439,14 +302,7 @@ export const EssentialRetailAboutSectionComponent: PuckComponent<
               constantValueEnabled={body.text.constantValueEnabled}
             >
               <div className="yer-about__body">
-                {typeof resolvedBody === "string" ? (
-                  <MaybeRTF
-                    data={resolvedBody}
-                    richTextStyleOverrides={bodyOverrides}
-                  />
-                ) : (
-                  resolvedBody
-                )}
+                {renderRichText(resolvedBody, bodyOverrides)}
               </div>
             </EntityField>
           </div>
@@ -492,7 +348,7 @@ export const EssentialRetailAboutSectionComponent: PuckComponent<
 export const EssentialRetailAboutSection: YextComponentConfig<AboutProps> =
   {
     label: "About Section",
-    fields: toPuckFields(aboutFields),
+    fields: aboutFields,
     defaultProps: {
       heading: {
         text: {

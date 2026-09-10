@@ -10,113 +10,31 @@ import {
   VisibilityWrapper,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   mergeMeta,
   resolveComponentData,
   resolveUrlTemplate,
-  toPuckFields,
   useDocument,
   useNearbyLocations,
   useTemplateProps,
   type StyledTextValue,
   type ThemeColor,
-  type TranslatableString,
   type YextComponentConfig,
   type YextEntityField,
   type YextFields,
   type ComprehensiveCTAValue,
 } from "@yext/visual-editor";
+import { formatPhoneNumber } from "@yext/visual-editor/section-library-support";
 import { Address, AnalyticsScopeProvider, Link } from "@yext/pages-components";
-import { parsePhoneNumber } from "awesome-phonenumber";
+import {
+  getScopedTypographyStyles,
+  getTextStyle,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const nearbyTypographyScopeClass = "yer-nearby-typography";
 
 const nearbyTypographyStyles = `
-  .${nearbyTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${nearbyTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${nearbyTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${nearbyTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${nearbyTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${nearbyTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${nearbyTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${nearbyTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${nearbyTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${nearbyTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${nearbyTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
+  ${getScopedTypographyStyles(nearbyTypographyScopeClass)}
   .${nearbyTypographyScopeClass} .yer-nearby__cardBody,
   .${nearbyTypographyScopeClass} .yer-nearby__distance {
     font-family: var(--fontFamily-body-fontFamily);
@@ -141,12 +59,6 @@ const nearbyTypographyStyles = `
 type CoordinateValue = {
   latitude?: number;
   longitude?: number;
-};
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
 };
 
 type NearbyTextStylesProps = {
@@ -183,20 +95,6 @@ type NearbyProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string; transform: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default" ? vars.transform : styles.textTransform,
-});
 
 const nearbyFields: YextFields<NearbyProps> = {
   section: {
@@ -381,26 +279,6 @@ const calculateDistanceMiles = (
   return 2 * earthRadiusMi * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
-const formatPhoneNumber = (
-  phoneNumber: string | undefined,
-  format: "international" | "domestic",
-) => {
-  if (!phoneNumber) {
-    return "";
-  }
-
-  const cleaned = phoneNumber.replace(/(?!^\+)\+|[^\d+]/g, "");
-  const parsed = parsePhoneNumber(cleaned);
-
-  if (!parsed.valid || !parsed.number) {
-    return phoneNumber;
-  }
-
-  return format === "international"
-    ? parsed.number.international
-    : parsed.number.national;
-};
-
 const makeNearbyCtaValue = (
   link: string,
   styles: NearbyLocationCardStyles["ctaStyles"],
@@ -493,7 +371,7 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
     typeof originCoordinate?.latitude === "number" &&
     typeof originCoordinate?.longitude === "number",
   );
-  const nearbyLocationHeadingStyle = buildTextStyle(
+  const nearbyLocationHeadingStyle = getTextStyle(
     cardStyles.headingTextStyles.styles,
     {
       family: "var(--fontFamily-h3-fontFamily)",
@@ -503,7 +381,7 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
     },
     cardStyles.headingTextStyles.fontColor,
   );
-  const nearbyLocationBodyStyle = buildTextStyle(
+  const nearbyLocationBodyStyle = getTextStyle(
     cardStyles.bodyTextStyles.styles,
     {
       family: "var(--fontFamily-body-fontFamily)",
@@ -664,7 +542,7 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
             >
               <h2
                 className="yer-nearby__heading"
-                style={buildTextStyle(
+                style={getTextStyle(
                   heading.styles,
                   {
                     family: "var(--fontFamily-h2-fontFamily)",
@@ -801,7 +679,7 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
 export const EssentialRetailNearbySection: YextComponentConfig<NearbyProps> =
   {
     label: "Nearby Section",
-    fields: toPuckFields(nearbyFields),
+    fields: nearbyFields,
     defaultProps: {
       heading: {
         text: {

@@ -7,22 +7,15 @@ import {
   ComprehensiveCTA,
   EntityField,
   Image,
-  MaybeRTF,
   VisibilityWrapper,
   getAggregateRating,
   getAnalyticsScopeHash,
   getSurfaceColorStyle,
-  getThemeColorCssValue,
   getDefaultRTF,
   resolveComponentData,
-  toPuckFields,
   useDocument,
   type ComprehensiveCTAValue,
-  type StyledTextValue,
-  type ThemeColor,
   type TranslatableAssetImage,
-  type TranslatableRichText,
-  type TranslatableString,
   type YextComponentConfig,
   type YextEntityField,
   type YextFields,
@@ -36,114 +29,27 @@ import {
   type ImageType,
   type StatusParams,
 } from "@yext/pages-components";
+import {
+  createCtaValue,
+  getRichTextStyleOverrides,
+  getScopedTypographyStyles,
+  getTextStyle,
+  renderRichText,
+  type StyledRtfProps,
+  type StyledTextProps,
+} from "../shared/sectionHelpers";
 
 const heroTypographyScopeClass = "yer-hero-typography";
 
-const heroTypographyStyles = `
-  .${heroTypographyScopeClass} {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${heroTypographyScopeClass} p {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${heroTypographyScopeClass} li {
-    font-family: var(--fontFamily-body-fontFamily);
-    font-size: var(--fontSize-body-fontSize);
-    line-height: 1.5;
-    font-weight: var(--fontWeight-body-fontWeight);
-    font-style: var(--fontStyle-body-fontStyle);
-    text-transform: var(--textTransform-body-textTransform);
-  }
-  .${heroTypographyScopeClass} h1 {
-    font-family: var(--fontFamily-h1-fontFamily);
-    font-size: var(--fontSize-h1-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h1-fontWeight);
-    font-style: var(--fontStyle-h1-fontStyle);
-    text-transform: var(--textTransform-h1-textTransform);
-  }
-  .${heroTypographyScopeClass} h2 {
-    font-family: var(--fontFamily-h2-fontFamily);
-    font-size: var(--fontSize-h2-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h2-fontWeight);
-    font-style: var(--fontStyle-h2-fontStyle);
-    text-transform: var(--textTransform-h2-textTransform);
-  }
-  .${heroTypographyScopeClass} h3 {
-    font-family: var(--fontFamily-h3-fontFamily);
-    font-size: var(--fontSize-h3-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h3-fontWeight);
-    font-style: var(--fontStyle-h3-fontStyle);
-    text-transform: var(--textTransform-h3-textTransform);
-  }
-  .${heroTypographyScopeClass} h4 {
-    font-family: var(--fontFamily-h4-fontFamily);
-    font-size: var(--fontSize-h4-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h4-fontWeight);
-    font-style: var(--fontStyle-h4-fontStyle);
-    text-transform: var(--textTransform-h4-textTransform);
-  }
-  .${heroTypographyScopeClass} h5 {
-    font-family: var(--fontFamily-h5-fontFamily);
-    font-size: var(--fontSize-h5-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h5-fontWeight);
-    font-style: var(--fontStyle-h5-fontStyle);
-    text-transform: var(--textTransform-h5-textTransform);
-  }
-  .${heroTypographyScopeClass} h6 {
-    font-family: var(--fontFamily-h6-fontFamily);
-    font-size: var(--fontSize-h6-fontSize);
-    line-height: 1.2;
-    font-weight: var(--fontWeight-h6-fontWeight);
-    font-style: var(--fontStyle-h6-fontStyle);
-    text-transform: var(--textTransform-h6-textTransform);
-  }
-  .${heroTypographyScopeClass} a:not(.font-button-fontFamily) {
-    font-family: var(--fontFamily-link-fontFamily);
-    font-size: var(--fontSize-link-fontSize);
-    font-weight: var(--fontWeight-link-fontWeight);
-    font-style: var(--fontStyle-link-fontStyle);
-    line-height: 1.5;
-    text-decoration: none;
-    text-transform: var(--textTransform-link-textTransform);
-    letter-spacing: var(--letterSpacing-link-letterSpacing);
-  }
-  .${heroTypographyScopeClass} a:not(.font-button-fontFamily):hover {
-    text-decoration: underline;
-  }
-`;
+const heroTypographyStyles = getScopedTypographyStyles(
+  heroTypographyScopeClass,
+);
 
 type HeroHoursStyles = {
   showCurrentStatus: boolean;
   timeFormat: "12h" | "24h";
   dayOfWeekFormat: "short" | "long";
   showDayNames: boolean;
-};
-
-type StyledTextProps = {
-  text: YextEntityField<TranslatableString>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
-};
-
-type StyledRtfProps = {
-  text: YextEntityField<TranslatableRichText>;
-  styles: StyledTextValue;
-  fontColor?: ThemeColor;
 };
 
 type HeroProps = {
@@ -162,45 +68,6 @@ type HeroProps = {
     visibleOnLivePage: boolean;
   };
 };
-
-const buildTextStyle = (
-  styles: StyledTextValue,
-  defaultVars: {
-    family: string;
-    size: string;
-    weight: string;
-    transform: string;
-  },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily:
-    styles.fontFamily === "default" ? defaultVars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? defaultVars.size : styles.fontSize,
-  fontWeight:
-    styles.fontWeight === "default" ? defaultVars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform:
-    styles.textTransform === "default"
-      ? defaultVars.transform
-      : styles.textTransform,
-});
-
-const buildRichTextStyleOverrides = (
-  styles: StyledTextValue,
-  vars: { family: string; size: string; weight: string },
-  color?: ThemeColor,
-) => ({
-  color: getThemeColorCssValue(color),
-  fontFamily: styles.fontFamily === "default" ? vars.family : styles.fontFamily,
-  fontSize: styles.fontSize === "default" ? vars.size : styles.fontSize,
-  fontWeight: styles.fontWeight === "default" ? vars.weight : styles.fontWeight,
-  fontStyle: styles.fontStyle === "default" ? undefined : styles.fontStyle,
-  textTransform: (styles.textTransform === "default"
-    ? "default"
-    : styles.textTransform) as
-    "default" | "none" | "uppercase" | "lowercase" | "capitalize",
-});
 
 const StarIcon = ({ className }: { className?: string }) => (
   <svg
@@ -341,44 +208,6 @@ const heroFields: YextFields<HeroProps> = {
   },
 };
 
-const makeCtaValue = (
-  label: string,
-  link: string,
-  variant: "primary" | "secondary",
-  color: ThemeColor,
-  eventName: string,
-): ComprehensiveCTAValue => ({
-  data: {
-    actionType: "link",
-    cta: {
-      field: "",
-      constantValue: {
-        label,
-        link,
-        linkType: "URL",
-        ctaType: label === "Get Directions" ? "getDirections" : "textAndLink",
-      },
-      constantValueEnabled: true,
-      selectedType: "textAndLink",
-    },
-    openInNewTab: false,
-  },
-  styles: {
-    variant,
-    color,
-    button: {
-      fontFamily: "default",
-      fontSize: "default",
-      fontWeight: "default",
-      fontStyle: "default",
-      textTransform: "default",
-      borderRadius: "default",
-      letterSpacing: "default",
-    },
-  },
-  eventName,
-});
-
 export const EssentialRetailHeroSectionComponent: PuckComponent<
   HeroProps
 > = ({
@@ -419,7 +248,7 @@ export const EssentialRetailHeroSectionComponent: PuckComponent<
       output: "plainText",
     }) ?? "";
   const bodyOverrides = {
-    ...buildRichTextStyleOverrides(
+    ...getRichTextStyleOverrides(
       body.styles,
       {
         family: "var(--fontFamily-body-fontFamily)",
@@ -431,9 +260,7 @@ export const EssentialRetailHeroSectionComponent: PuckComponent<
     lineHeight: 1.2,
     letterSpacing: "0.01em",
   };
-  const resolvedBody = resolveComponentData(body.text, locale, streamDocument, {
-    richTextStyleOverrides: bodyOverrides,
-  });
+  const resolvedBody = resolveComponentData(body.text, locale, streamDocument);
   const resolvedHours = resolveComponentData(hours, locale, streamDocument);
   const { averageRating, reviewCount } = getAggregateRating(streamDocument) ?? {
     averageRating: 0,
@@ -646,7 +473,7 @@ export const EssentialRetailHeroSectionComponent: PuckComponent<
               >
                 <h1
                   className="yer-hero__title"
-                  style={buildTextStyle(
+                  style={getTextStyle(
                     heading.styles,
                     {
                       family: "var(--fontFamily-h1-fontFamily)",
@@ -674,14 +501,7 @@ export const EssentialRetailHeroSectionComponent: PuckComponent<
                 fieldId={body.text.field}
                 constantValueEnabled={body.text.constantValueEnabled}
               >
-                {typeof resolvedBody === "string" ? (
-                  <MaybeRTF
-                    data={resolvedBody}
-                    richTextStyleOverrides={bodyOverrides}
-                  />
-                ) : (
-                  resolvedBody
-                )}
+                {renderRichText(resolvedBody, bodyOverrides)}
               </EntityField>
               <BackgroundProvider
                 value={{
@@ -725,7 +545,7 @@ export const EssentialRetailHeroSectionComponent: PuckComponent<
 
 export const EssentialRetailHeroSection: YextComponentConfig<HeroProps> = {
   label: "Hero Section",
-  fields: toPuckFields(heroFields),
+  fields: heroFields,
   defaultProps: {
     heroImage: {
       image: {
@@ -785,26 +605,26 @@ export const EssentialRetailHeroSection: YextComponentConfig<HeroProps> = {
       dayOfWeekFormat: "long",
       showDayNames: false,
     },
-    primaryCta: makeCtaValue(
-      "Get Directions",
-      "#",
-      "primary",
-      {
+    primaryCta: createCtaValue({
+      label: "Get Directions",
+      link: "#",
+      variant: "primary",
+      color: {
         selectedColor: "palette-primary",
         contrastingColor: "palette-primary-contrast",
       },
-      "primaryCta",
-    ),
-    secondaryCta: makeCtaValue(
-      "Book Personal Stylist",
-      "#",
-      "secondary",
-      {
+      eventName: "primaryCta",
+    }),
+    secondaryCta: createCtaValue({
+      label: "Book Personal Stylist",
+      link: "#",
+      variant: "secondary",
+      color: {
         selectedColor: "palette-primary",
         contrastingColor: "palette-primary-contrast",
       },
-      "secondaryCta",
-    ),
+      eventName: "secondaryCta",
+    }),
     section: {
       visibleOnLivePage: true,
     },
