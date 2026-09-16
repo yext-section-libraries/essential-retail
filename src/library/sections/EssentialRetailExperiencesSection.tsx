@@ -3,6 +3,7 @@ import type { SectionConfig } from "@yext/visual-editor";
 import * as React from "react";
 import { type PuckComponent } from "@puckeditor/core";
 import {
+  msg,
   Background,
   ComprehensiveCTA,
   EntityField,
@@ -202,38 +203,38 @@ const experienceCardsSource = createItemSource<ExperienceCardFields>({
 
 const experiencesFields: YextFields<ExperiencesProps> = {
   section: {
-    label: "Section",
+    label: msg("fields.section", "Section"),
     type: "object",
     objectFields: {
       visibleOnLivePage: {
-        label: "Visible on Live Page",
+        label: msg("fields.visibleOnLivePage", "Visible on Live Page"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       backgroundColor: {
-        label: "Background Color",
+        label: msg("fields.backgroundColor", "Background Color"),
         type: "basicSelector",
         options: "BACKGROUND_COLOR",
       },
     },
   },
   heading: {
-    label: "Heading",
+    label: msg("fields.heading", "Heading"),
     type: "object",
     objectFields: {
       text: {
         type: "entityField",
-        label: "Text",
+        label: msg("fields.text", "Text"),
         filter: {
           types: ["type.string"],
         },
       },
-      styles: { label: "Text Styles", type: "styledText" },
+      styles: { label: msg("fields.textStyles", "Text Styles"), type: "styledText" },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
@@ -241,86 +242,86 @@ const experiencesFields: YextFields<ExperiencesProps> = {
   },
   cards: experienceCardsSource.field,
   cardStyles: {
-    label: "Card Styles",
+    label: msg("fields.cardStyles", "Card Styles"),
     type: "object",
     objectFields: {
       image: {
-        label: "Image Styles",
+        label: msg("fields.imageStyles", "Image Styles"),
         type: "object",
         objectFields: {
           aspectRatio: {
             type: "basicSelector",
-            label: "Aspect Ratio",
+            label: msg("fields.options.aspectRatio", "Aspect Ratio"),
             options: aspectRatioOptions,
           },
           imageConstrain: {
-            label: "Image Constrain",
+            label: msg("fields.imageConstrain", "Image Constrain"),
             type: "select",
             options: [
-              { label: "Fixed", value: "fixed" },
-              { label: "Filled", value: "filled" },
+              { label: msg("fields.options.fixed", "Fixed"), value: "fixed" },
+              { label: msg("fields.options.filled", "Filled"), value: "filled" },
             ],
           },
           styles: {
-            label: "Image Styles",
+            label: msg("fields.imageStyles", "Image Styles"),
             type: "styledImage",
           },
         },
       },
       headingTextStyles: {
-        label: "Heading Text Styles",
+        label: msg("fields.headingTextStyles", "Heading Text Styles"),
         type: "object",
         objectFields: {
           styles: {
-            label: "Text Styles",
+            label: msg("fields.textStyles", "Text Styles"),
             type: "styledText",
           },
           fontColor: {
-            label: "Font Color",
+            label: msg("fields.fontColor", "Font Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
         },
       },
       descriptionTextStyles: {
-        label: "Description Text Styles",
+        label: msg("fields.descriptionTextStyles", "Description Text Styles"),
         type: "object",
         objectFields: {
           styles: {
-            label: "Text Styles",
+            label: msg("fields.textStyles", "Text Styles"),
             type: "styledText",
           },
           fontColor: {
-            label: "Font Color",
+            label: msg("fields.fontColor", "Font Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
         },
       },
       ctaStyles: {
-        label: "CTA Styles",
+        label: msg("fields.ctaStyles", "CTA Styles"),
         type: "object",
         objectFields: {
           variant: {
-            label: "Variant",
+            label: msg("fields.variant", "Variant"),
             type: "select",
             options: [
-              { label: "Solid", value: "primary" },
-              { label: "Outline", value: "secondary" },
-              { label: "Link", value: "link" },
+              { label: msg("fields.options.solid", "Solid"), value: "primary" },
+              { label: msg("fields.options.outline", "Outline"), value: "secondary" },
+              { label: msg("fields.options.link", "Link"), value: "link" },
             ],
           },
           color: {
-            label: "Color",
+            label: msg("fields.color", "Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
           button: {
-            label: "Button Styles",
+            label: msg("fields.buttonStyles", "Button Styles"),
             type: "styledButton",
           },
           link: {
-            label: "Link Styles",
+            label: msg("fields.linkStyles", "Link Styles"),
             type: "styledLink",
           },
         },

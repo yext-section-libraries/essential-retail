@@ -2,7 +2,9 @@ import type { SectionConfig } from "@yext/visual-editor";
 
 import * as React from "react";
 import { type PuckComponent } from "@puckeditor/core";
+import { useTranslation } from "react-i18next";
 import {
+  msg,
   Background,
   EntityField,
   VisibilityWrapper,
@@ -74,76 +76,76 @@ const fallbackReviews: ReviewRecord[] = [
 
 const reviewsFields: YextFields<ReviewsProps> = {
   section: {
-    label: "Section",
+    label: msg("fields.section", "Section"),
     type: "object",
     objectFields: {
       visibleOnLivePage: {
-        label: "Visible on Live Page",
+        label: msg("fields.visibleOnLivePage", "Visible on Live Page"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       backgroundColor: {
-        label: "Background Color",
+        label: msg("fields.backgroundColor", "Background Color"),
         type: "basicSelector",
         options: "BACKGROUND_COLOR",
       },
     },
   },
   heading: {
-    label: "Heading",
+    label: msg("fields.heading", "Heading"),
     type: "object",
     objectFields: {
       text: {
         type: "entityField",
-        label: "Text",
+        label: msg("fields.text", "Text"),
         filter: { types: ["type.string"] },
       },
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   reviewHeadingStyles: {
-    label: "Review Heading Styles",
+    label: msg("fields.reviewHeadingStyles", "Review Heading Styles"),
     type: "object",
     objectFields: {
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   reviewBodyStyles: {
-    label: "Review Body Styles",
+    label: msg("fields.reviewBodyStyles", "Review Body Styles"),
     type: "object",
     objectFields: {
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   reviewStarColor: {
-    label: "Review Star Color",
+    label: msg("fields.reviewStarColor", "Review Star Color"),
     type: "basicSelector",
     options: "SITE_COLOR",
   },
@@ -254,6 +256,7 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
   section,
   puck,
 }) => {
+  const { t } = useTranslation();
   const streamDocument = useDocument<Record<string, unknown>>();
   const locale =
     typeof streamDocument.locale === "string" ? streamDocument.locale : "en";
@@ -497,8 +500,10 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
                 })
               ) : (
                 <p className="yer-reviews__empty">
-                  Reviews will appear here when first-party review data is
-                  available.
+                  {t(
+                    "reviewsUnavailableEditor",
+                    "Reviews will appear here when first-party review data is available.",
+                  )}
                 </p>
               )}
             </div>

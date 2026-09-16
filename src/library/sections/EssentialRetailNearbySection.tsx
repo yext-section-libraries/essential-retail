@@ -1,7 +1,9 @@
 import type { SectionConfig } from "@yext/visual-editor";
 
 import { type PuckComponent } from "@puckeditor/core";
+import { useTranslation } from "react-i18next";
 import {
+  msg,
   Background,
   ComprehensiveCTA,
   EntityField,
@@ -98,129 +100,129 @@ type NearbyProps = {
 
 const nearbyFields: YextFields<NearbyProps> = {
   section: {
-    label: "Section",
+    label: msg("fields.section", "Section"),
     type: "object",
     objectFields: {
       visibleOnLivePage: {
-        label: "Visible on Live Page",
+        label: msg("fields.visibleOnLivePage", "Visible on Live Page"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       backgroundColor: {
-        label: "Background Color",
+        label: msg("fields.backgroundColor", "Background Color"),
         type: "basicSelector",
         options: "BACKGROUND_COLOR",
       },
     },
   },
   heading: {
-    label: "Heading",
+    label: msg("fields.heading", "Heading"),
     type: "object",
     objectFields: {
       text: {
         type: "entityField",
-        label: "Text",
+        label: msg("fields.text", "Text"),
         filter: { types: ["type.string"] },
       },
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   cardStyles: {
-    label: "Nearby Location Styles",
+    label: msg("fields.nearbyLocationStyles", "Nearby Location Styles"),
     type: "object",
     objectFields: {
       headingTextStyles: {
-        label: "Heading Text Styles",
+        label: msg("fields.headingTextStyles", "Heading Text Styles"),
         type: "object",
         objectFields: {
           styles: {
-            label: "Text Styles",
+            label: msg("fields.textStyles", "Text Styles"),
             type: "styledText",
           },
           fontColor: {
-            label: "Font Color",
+            label: msg("fields.fontColor", "Font Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
         },
       },
       bodyTextStyles: {
-        label: "Body Text Styles",
+        label: msg("fields.bodyTextStyles", "Body Text Styles"),
         type: "object",
         objectFields: {
           styles: {
-            label: "Text Styles",
+            label: msg("fields.textStyles", "Text Styles"),
             type: "styledText",
           },
           fontColor: {
-            label: "Font Color",
+            label: msg("fields.fontColor", "Font Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
         },
       },
       address: {
-        label: "Address",
+        label: msg("fields.address", "Address"),
         type: "object",
         objectFields: {
           showRegion: {
-            label: "Show Region",
+            label: msg("fields.showRegion", "Show Region"),
             type: "radio",
             options: [
-              { label: "Yes", value: true },
-              { label: "No", value: false },
+              { label: msg("fields.options.yes", "Yes"), value: true },
+              { label: msg("fields.options.no", "No"), value: false },
             ],
           },
           showCountry: {
-            label: "Show Country",
+            label: msg("fields.showCountry", "Show Country"),
             type: "radio",
             options: [
-              { label: "Yes", value: true },
-              { label: "No", value: false },
+              { label: msg("fields.options.yes", "Yes"), value: true },
+              { label: msg("fields.options.no", "No"), value: false },
             ],
           },
         },
       },
       phone: {
-        label: "Phone",
+        label: msg("fields.phone", "Phone"),
         type: "object",
         objectFields: {
           phoneFormat: {
-            label: "Phone Number Format",
+            label: msg("fields.phoneNumberFormat", "Phone Number Format"),
             type: "radio",
             options: [
-              { label: "Domestic", value: "domestic" },
-              { label: "International", value: "international" },
+              { label: msg("fields.options.domestic", "Domestic"), value: "domestic" },
+              { label: msg("fields.options.international", "International"), value: "international" },
             ],
           },
         },
       },
       ctaStyles: {
-        label: "Call to Action Styles",
+        label: msg("fields.callToActionStyles", "Call to Action Styles"),
         type: "object",
         objectFields: {
           variant: {
-            label: "Variant",
+            label: msg("fields.variant", "Variant"),
             type: "radio",
             options: [
-              { label: "Primary", value: "primary" },
-              { label: "Secondary", value: "secondary" },
-              { label: "Link", value: "link" },
+              { label: msg("fields.options.primary", "Primary"), value: "primary" },
+              { label: msg("fields.options.secondary", "Secondary"), value: "secondary" },
+              { label: msg("fields.options.link", "Link"), value: "link" },
             ],
           },
           color: {
-            label: "Color",
+            label: msg("fields.color", "Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
@@ -229,21 +231,21 @@ const nearbyFields: YextFields<NearbyProps> = {
     },
   },
   map: {
-    label: "Map",
+    label: msg("fields.map", "Map"),
     type: "object",
     objectFields: {
       coordinate: {
         type: "entityField",
-        label: "Coordinates",
+        label: msg("fields.coordinates", "Coordinates"),
         filter: { types: ["type.coordinate"] },
       },
       mapStyle: {
-        label: "Mapbox Map Style",
+        label: msg("fields.mapboxMapStyle", "Mapbox Map Style"),
         type: "select",
         options: mapboxStaticMapStyleOptions,
       },
       zoom: {
-        label: "Zoom",
+        label: msg("fields.zoom", "Zoom"),
         type: "number",
         min: 0,
         max: 22,
@@ -327,6 +329,7 @@ const makeNearbyCtaValue = (
 export const EssentialRetailNearbySectionComponent: PuckComponent<
   NearbyProps
 > = ({ id, heading, cardStyles, map, section, puck }) => {
+  const { t } = useTranslation();
   const streamDocument = useDocument<Record<string, unknown>>();
   const locale =
     typeof streamDocument.locale === "string" ? streamDocument.locale : "en";
@@ -581,7 +584,10 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
                     />
                   ) : (
                     <div className="yer-nearby__mapPlaceholder">
-                      Add the Mapbox env var to render the nearby store map.
+                      {t(
+                        "mapboxEnvVarRequiredEditor",
+                        "Add the Mapbox env var to render the nearby store map.",
+                      )}
                     </div>
                   )}
                 </figure>
@@ -663,8 +669,10 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
               </div>
             ) : puck.isEditing ? (
               <p className="yer-nearby__empty">
-                Nearby locations will appear here when sibling location data is
-                available.
+                {t(
+                  "nearbyLocationsUnavailableEditor",
+                  "Nearby locations will appear here when sibling location data is available.",
+                )}
               </p>
             ) : (
               <></>

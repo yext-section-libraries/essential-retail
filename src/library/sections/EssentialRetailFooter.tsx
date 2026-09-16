@@ -1,7 +1,9 @@
 import type { SectionConfig } from "@yext/visual-editor";
 
 import { type PuckComponent } from "@puckeditor/core";
+import { useTranslation } from "react-i18next";
 import {
+  msg,
   EntityField,
   Image,
   VisibilityWrapper,
@@ -206,63 +208,63 @@ type FooterProps = {
 
 const footerFields: YextFields<FooterProps> = {
   section: {
-    label: "Section",
+    label: msg("fields.section", "Section"),
     type: "object",
     objectFields: {
       visibleOnLivePage: {
-        label: "Visible on Live Page",
+        label: msg("fields.visibleOnLivePage", "Visible on Live Page"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       backgroundColor: {
-        label: "Background Color",
+        label: msg("fields.backgroundColor", "Background Color"),
         type: "basicSelector",
         options: "BACKGROUND_COLOR",
       },
     },
   },
   logoImage: {
-    label: "Logo Image",
+    label: msg("fields.logoImage", "Logo Image"),
     type: "object",
     objectFields: {
       image: {
         type: "entityField",
-        label: "Image",
+        label: msg("fields.image", "Image"),
         filter: { types: ["type.image"] },
       },
       aspectRatio: {
         type: "basicSelector",
-        label: "Aspect Ratio",
+        label: msg("fields.options.aspectRatio", "Aspect Ratio"),
         options: aspectRatioOptions,
       },
       imageConstrain: {
-        label: "Image Constrain",
+        label: msg("fields.imageConstrain", "Image Constrain"),
         type: "select",
         options: [
-          { label: "Fixed", value: "fixed" },
-          { label: "Filled", value: "filled" },
+          { label: msg("fields.options.fixed", "Fixed"), value: "fixed" },
+          { label: msg("fields.options.filled", "Filled"), value: "filled" },
         ],
       },
       styles: {
-        label: "Image Styles",
+        label: msg("fields.imageStyles", "Image Styles"),
         type: "styledImage",
       },
     },
   },
   logoLink: {
-    label: "Logo Link",
+    label: msg("fields.logoLink", "Logo Link"),
     type: "object",
     objectFields: {
       label: {
-        label: "Label",
+        label: msg("fields.label", "Label"),
         type: "entityField",
         filter: { types: ["type.string"] },
       },
       link: {
-        label: "Link",
+        label: msg("fields.link", "Link"),
         type: "entityField",
         filter: { types: ["type.string"] },
       },
@@ -271,53 +273,53 @@ const footerFields: YextFields<FooterProps> = {
   primaryLinks: primaryFooterLinksSource.field,
   socialLinks: footerSocialLinksSource.field,
   socialIconStyles: {
-    label: "Social Icon Styles",
+    label: msg("fields.socialIconStyles", "Social Icon Styles"),
     type: "styledImage",
   },
   address: {
-    label: "Address",
+    label: msg("fields.address", "Address"),
     type: "object",
     objectFields: {
       address: {
         type: "entityField",
-        label: "Address",
+        label: msg("fields.address", "Address"),
         filter: { types: ["type.address"] },
       },
       showRegion: {
-        label: "Show Region",
+        label: msg("fields.showRegion", "Show Region"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       showCountry: {
-        label: "Show Country",
+        label: msg("fields.showCountry", "Show Country"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
     },
   },
   phones: {
-    label: "Phones",
+    label: msg("fields.phones", "Phones"),
     type: "object",
     objectFields: {
       items: {
-        label: "Items",
+        label: msg("fields.items", "Items"),
         type: "array",
         arrayFields: {
           number: {
             type: "entityField",
-            label: "Number",
+            label: msg("fields.number", "Number"),
             filter: {
               types: ["type.phone"],
             },
           },
           label: {
-            label: "Label",
+            label: msg("fields.label", "Label"),
             type: "text",
           },
         },
@@ -332,49 +334,49 @@ const footerFields: YextFields<FooterProps> = {
         getItemSummary: (item) => item.label || item.number.field || "Phone",
       },
       phoneFormat: {
-        label: "Phone Format",
+        label: msg("fields.phoneFormat", "Phone Format"),
         type: "radio",
         options: [
-          { label: "Domestic", value: "domestic" },
-          { label: "International", value: "international" },
+          { label: msg("fields.options.domestic", "Domestic"), value: "domestic" },
+          { label: msg("fields.options.international", "International"), value: "international" },
         ],
       },
       includeHyperlink: {
-        label: "Include Hyperlink",
+        label: msg("fields.includeHyperlink", "Include Hyperlink"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
     },
   },
   footerLinkStyles: {
-    label: "Footer Link Styles",
+    label: msg("fields.footerLinkStyles", "Footer Link Styles"),
     type: "object",
     objectFields: {
       styles: {
-        label: "Link Styles",
+        label: msg("fields.linkStyles", "Link Styles"),
         type: "styledLink",
         showIncludeCaretField: false,
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   bodyTextStyles: {
-    label: "Body Text Styles",
+    label: msg("fields.bodyTextStyles", "Body Text Styles"),
     type: "object",
     objectFields: {
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
@@ -483,6 +485,7 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
   section,
   puck,
 }) => {
+  const { t } = useTranslation();
   const streamDocument = useDocument();
   const locale = streamDocument.locale ?? "en";
   const scopeName = `YextEssentialRetailFooter${getAnalyticsScopeHash(id)}`;
@@ -759,7 +762,10 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
               fieldId={primaryLinks.field}
               constantValueEnabled={primaryLinks.constantValueEnabled}
             >
-              <nav aria-label="Footer" className="yer-footer__links">
+              <nav
+                aria-label={t("footer", "Footer")}
+                className="yer-footer__links"
+              >
                 {resolvedPrimaryLinks.map((item) => (
                   <a
                     key={`${item.link}-${item.index}`}
@@ -780,7 +786,10 @@ export const EssentialRetailFooterComponent: PuckComponent<FooterProps> = ({
               fieldId={socialLinks.field}
               constantValueEnabled={socialLinks.constantValueEnabled}
             >
-              <div aria-label="Social media" className="yer-footer__social">
+              <div
+                aria-label={t("socialMedia", "Social media")}
+                className="yer-footer__social"
+              >
                 {resolvedSocialLinks.map((item) => (
                   <a
                     key={`${item.link}-${item.index}`}
