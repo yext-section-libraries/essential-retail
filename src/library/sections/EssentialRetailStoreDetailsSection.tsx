@@ -2,7 +2,9 @@ import type { SectionConfig } from "@yext/visual-editor";
 
 import * as React from "react";
 import { type PuckComponent } from "@puckeditor/core";
+import { useTranslation } from "react-i18next";
 import {
+  msg,
   Background,
   ComprehensiveCTA,
   EntityField,
@@ -162,100 +164,100 @@ const getTranslatableStringValue = (value: TranslatableString) => {
 
 const storeDetailsFields: YextFields<StoreDetailsProps> = {
   section: {
-    label: "Section",
+    label: msg("fields.section", "Section"),
     type: "object",
     objectFields: {
       visibleOnLivePage: {
-        label: "Visible on Live Page",
+        label: msg("fields.visibleOnLivePage", "Visible on Live Page"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       backgroundColor: {
-        label: "Background Color",
+        label: msg("fields.backgroundColor", "Background Color"),
         type: "basicSelector",
         options: "BACKGROUND_COLOR",
       },
     },
   },
   heading: {
-    label: "Section Heading",
+    label: msg("fields.sectionHeading", "Section Heading"),
     type: "object",
     objectFields: {
       text: {
         type: "entityField",
-        label: "Text",
+        label: msg("fields.text", "Text"),
         filter: {
           types: ["type.string"],
         },
       },
-      styles: { label: "Text Styles", type: "styledText" },
+      styles: { label: msg("fields.textStyles", "Text Styles"), type: "styledText" },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   headings: {
-    label: "Column Headings",
+    label: msg("fields.columnHeadings", "Column Headings"),
     type: "object",
     objectFields: {
       column1Heading: {
         type: "entityField",
-        label: "Column 1 Heading",
+        label: msg("fields.column1Heading", "Column 1 Heading"),
         filter: {
           types: ["type.string"],
         },
       },
       column2Heading: {
         type: "entityField",
-        label: "Column 2 Heading",
+        label: msg("fields.column2Heading", "Column 2 Heading"),
         filter: {
           types: ["type.string"],
         },
       },
       column3Heading: {
         type: "entityField",
-        label: "Column 3 Heading",
+        label: msg("fields.column3Heading", "Column 3 Heading"),
         filter: {
           types: ["type.string"],
         },
       },
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
     },
   },
   address: {
-    label: "Address",
+    label: msg("fields.address", "Address"),
     type: "object",
     objectFields: {
       heading: {
-        label: "Subheading",
+        label: msg("fields.subheading", "Subheading"),
         type: "object",
         objectFields: {
           text: {
             type: "entityField",
-            label: "Text",
+            label: msg("fields.text", "Text"),
             filter: {
               types: ["type.string"],
             },
           },
           styles: {
-            label: "Text Styles",
+            label: msg("fields.textStyles", "Text Styles"),
             type: "styledText",
           },
           fontColor: {
-            label: "Font Color",
+            label: msg("fields.fontColor", "Font Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
@@ -263,68 +265,68 @@ const storeDetailsFields: YextFields<StoreDetailsProps> = {
       },
       address: {
         type: "entityField",
-        label: "Address",
+        label: msg("fields.address", "Address"),
         filter: {
           types: ["type.address"],
         },
       },
       showRegion: {
-        label: "Show Region",
+        label: msg("fields.showRegion", "Show Region"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
       showCountry: {
-        label: "Show Country",
+        label: msg("fields.showCountry", "Show Country"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
     },
   },
   phones: {
-    label: "Phones",
+    label: msg("fields.phones", "Phones"),
     type: "object",
     objectFields: {
       heading: {
-        label: "Subheading",
+        label: msg("fields.subheading", "Subheading"),
         type: "object",
         objectFields: {
           text: {
             type: "entityField",
-            label: "Text",
+            label: msg("fields.text", "Text"),
             filter: {
               types: ["type.string"],
             },
           },
           styles: {
-            label: "Text Styles",
+            label: msg("fields.textStyles", "Text Styles"),
             type: "styledText",
           },
           fontColor: {
-            label: "Font Color",
+            label: msg("fields.fontColor", "Font Color"),
             type: "basicSelector",
             options: "SITE_COLOR",
           },
         },
       },
       items: {
-        label: "Items",
+        label: msg("fields.items", "Items"),
         type: "array",
         arrayFields: {
           number: {
             type: "entityField",
-            label: "Number",
+            label: msg("fields.number", "Number"),
             filter: {
               types: ["type.phone"],
             },
           },
           label: {
-            label: "Label",
+            label: msg("fields.label", "Label"),
             type: "text",
           },
         },
@@ -339,75 +341,75 @@ const storeDetailsFields: YextFields<StoreDetailsProps> = {
         getItemSummary: (item) => item.label || item.number.field || "Phone",
       },
       phoneFormat: {
-        label: "Phone Format",
+        label: msg("fields.phoneFormat", "Phone Format"),
         type: "radio",
         options: [
-          { label: "Domestic", value: "domestic" },
-          { label: "International", value: "international" },
+          { label: msg("fields.options.domestic", "Domestic"), value: "domestic" },
+          { label: msg("fields.options.international", "International"), value: "international" },
         ],
       },
       includeHyperlink: {
-        label: "Include Hyperlink",
+        label: msg("fields.includeHyperlink", "Include Hyperlink"),
         type: "radio",
         options: [
-          { label: "Yes", value: true },
-          { label: "No", value: false },
+          { label: msg("fields.options.yes", "Yes"), value: true },
+          { label: msg("fields.options.no", "No"), value: false },
         ],
       },
     },
   },
   websiteCta: {
-    label: "Primary Call to Action",
+    label: msg("fields.primaryCallToAction", "Primary Call to Action"),
     type: "comprehensiveCTA",
   },
   directionsCta: {
-    label: "Secondary Call to Action",
+    label: msg("fields.secondaryCallToAction", "Secondary Call to Action"),
     type: "comprehensiveCTA",
   },
   hours: {
-    label: "Hours",
+    label: msg("fields.hours", "Hours"),
     type: "object",
     objectFields: {
       hours: {
         type: "entityField",
-        label: "Hours",
+        label: msg("fields.hours", "Hours"),
         filter: {
           types: ["type.hours"],
         },
         disableConstantValueToggle: true,
       },
       styles: {
-        label: "Hours Styles",
+        label: msg("fields.hoursStyles", "Hours Styles"),
         type: "object",
         objectFields: {
           startOfWeek: {
-            label: "Start Of Week",
+            label: msg("fields.startOfWeek", "Start Of Week"),
             type: "select",
             options: [
-              { label: "Monday", value: "monday" },
-              { label: "Tuesday", value: "tuesday" },
-              { label: "Wednesday", value: "wednesday" },
-              { label: "Thursday", value: "thursday" },
-              { label: "Friday", value: "friday" },
-              { label: "Saturday", value: "saturday" },
-              { label: "Sunday", value: "sunday" },
-              { label: "Today", value: "today" },
+              { label: msg("fields.options.monday", "Monday"), value: "monday" },
+              { label: msg("fields.options.tuesday", "Tuesday"), value: "tuesday" },
+              { label: msg("fields.options.wednesday", "Wednesday"), value: "wednesday" },
+              { label: msg("fields.options.thursday", "Thursday"), value: "thursday" },
+              { label: msg("fields.options.friday", "Friday"), value: "friday" },
+              { label: msg("fields.options.saturday", "Saturday"), value: "saturday" },
+              { label: msg("fields.options.sunday", "Sunday"), value: "sunday" },
+              { label: msg("fields.options.today", "Today"), value: "today" },
             ],
           },
           collapseDays: {
-            label: "Collapse Days",
+            label: msg("fields.collapseDays", "Collapse Days"),
             type: "radio",
             options: [
-              { label: "Yes", value: true },
-              { label: "No", value: false },
+              { label: msg("fields.options.yes", "Yes"), value: true },
+              { label: msg("fields.options.no", "No"), value: false },
             ],
           },
           showAdditionalHoursText: {
-            label: "Show Additional Hours Text",
+            label: msg("fields.options.showAdditionalHoursText", "Show Additional Hours Text"),
             type: "radio",
             options: [
-              { label: "Yes", value: true },
-              { label: "No", value: false },
+              { label: msg("fields.options.yes", "Yes"), value: true },
+              { label: msg("fields.options.no", "No"), value: false },
             ],
           },
         },
@@ -415,23 +417,23 @@ const storeDetailsFields: YextFields<StoreDetailsProps> = {
     },
   },
   services: {
-    label: "Services",
+    label: msg("fields.services", "Services"),
     type: "object",
     objectFields: {
       text: {
         type: "entityField",
-        label: "Text List",
+        label: msg("fields.textList", "Text List"),
         filter: {
           types: ["type.string"],
           includeListsOnly: true,
         },
       },
       styles: {
-        label: "Text Styles",
+        label: msg("fields.textStyles", "Text Styles"),
         type: "styledText",
       },
       fontColor: {
-        label: "Font Color",
+        label: msg("fields.fontColor", "Font Color"),
         type: "basicSelector",
         options: "SITE_COLOR",
       },
@@ -471,6 +473,25 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
     section,
     puck,
   } = props;
+  const { t, i18n } = useTranslation();
+  const dayOfWeekNames = React.useMemo<DayOfWeekNames>(() => {
+    const formatter = new Intl.DateTimeFormat(i18n.language, {
+      timeZone: "UTC",
+      weekday: "long",
+    });
+    const formatWeekday = (day: number) =>
+      formatter.format(new Date(Date.UTC(2024, 0, day)));
+
+    return {
+      sunday: formatWeekday(7),
+      monday: formatWeekday(8),
+      tuesday: formatWeekday(9),
+      wednesday: formatWeekday(10),
+      thursday: formatWeekday(11),
+      friday: formatWeekday(12),
+      saturday: formatWeekday(13),
+    };
+  }, [i18n.language]);
   const streamDocument = useDocument();
   const locale = streamDocument.locale ?? "en";
   const scopeName = `YextEssentialRetailStoreDetailsSection${getAnalyticsScopeHash(id)}`;
@@ -927,9 +948,16 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
                       <HoursTable
                         hours={resolvedHours}
                         comingSoon={streamDocument.comingSoon}
+                        dayOfWeekNames={dayOfWeekNames}
                         startOfWeek={hours.styles.startOfWeek}
                         collapseDays={hours.styles.collapseDays}
                         className="yer-store-details__hoursTable"
+                        intervalTranslations={{
+                          isClosed: t("closed", "Closed"),
+                          open24Hours: t("open24Hours", "Open 24 Hours"),
+                          reopenDate: t("reopenDate", "Reopen Date"),
+                          timeFormatLocale: i18n.language,
+                        }}
                       />
                       {hours.styles.showAdditionalHoursText &&
                       typeof streamDocument.additionalHoursText === "string" &&
