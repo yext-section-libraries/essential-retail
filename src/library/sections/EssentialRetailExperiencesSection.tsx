@@ -642,7 +642,7 @@ export const EssentialRetailExperiencesSectionComponent: PuckComponent<
 
 export const EssentialRetailExperiencesSection: YextComponentConfig<ExperiencesProps> =
   {
-    label: "Experiences Section",
+    label: "Experiences",
     fields: experiencesFields,
     resolveFields: (data) => {
       const fields = toPuckFields(experiencesFields) as any;
@@ -756,7 +756,7 @@ export const EssentialRetailExperiencesSection: YextComponentConfig<ExperiencesP
 
 export const config: SectionConfig = {
   id: "EssentialRetailExperiencesSection",
-  displayName: "Experiences Section",
-  description: "Experiences Section",
+  displayName: "Experiences",
+  description: "Experiences",
   pageSetTypes: ["ENTITY"],
 };

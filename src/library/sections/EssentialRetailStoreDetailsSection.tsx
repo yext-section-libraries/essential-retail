@@ -1033,7 +1033,7 @@ export const EssentialRetailStoreDetailsSectionComponent: PuckComponent<
 
 export const EssentialRetailStoreDetailsSection: YextComponentConfig<StoreDetailsProps> =
   {
-    label: "Store Details Section",
+    label: "Store Details",
     fields: storeDetailsFields,
     defaultProps: {
       heading: {
@@ -1185,7 +1185,7 @@ export const EssentialRetailStoreDetailsSection: YextComponentConfig<StoreDetail
 
 export const config: SectionConfig = {
   id: "EssentialRetailStoreDetailsSection",
-  displayName: "Store Details Section",
-  description: "Store Details Section",
+  displayName: "Store Details",
+  description: "Store Details",
   pageSetTypes: ["ENTITY"],
 };

@@ -612,7 +612,7 @@ export const EssentialRetailHeroSectionComponent: PuckComponent<
 };
 
 export const EssentialRetailHeroSection: YextComponentConfig<HeroProps> = {
-  label: "Hero Section",
+  label: "Hero",
   fields: heroFields,
   defaultProps: {
     heroImage: {
@@ -702,7 +702,7 @@ export const EssentialRetailHeroSection: YextComponentConfig<HeroProps> = {
 
 export const config: SectionConfig = {
   id: "EssentialRetailHeroSection",
-  displayName: "Hero Section",
-  description: "Hero Section",
+  displayName: "Hero",
+  description: "Hero",
   pageSetTypes: ["ENTITY"],
 };

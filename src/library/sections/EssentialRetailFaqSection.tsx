@@ -418,7 +418,7 @@ export const EssentialRetailFaqSectionComponent: PuckComponent<
 };
 
 export const EssentialRetailFaqSection: YextComponentConfig<FaqProps> = {
-  label: "FAQ Section",
+  label: "FAQ",
   fields: faqFields,
   defaultProps: {
     heading: {
@@ -473,7 +473,7 @@ export const EssentialRetailFaqSection: YextComponentConfig<FaqProps> = {
 
 export const config: SectionConfig = {
   id: "EssentialRetailFaqSection",
-  displayName: "FAQ Section",
-  description: "FAQ Section",
+  displayName: "FAQ",
+  description: "FAQ",
   pageSetTypes: ["ENTITY"],
 };
