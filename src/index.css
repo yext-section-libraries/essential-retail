@@ -4,11 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Inline rich text must use the body size instead of its saved font size. */
-.rtf-wrapper :is(p, li) :is(span, strong, em, b, i, u, s) {
-  font-size: inherit !important;
-}
-
 /* Keep locator announcements available to screen readers. */
 .ve-locator-filter-search .sr-only {
   display: block;
