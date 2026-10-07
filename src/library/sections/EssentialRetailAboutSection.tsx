@@ -348,7 +348,7 @@ export const EssentialRetailAboutSectionComponent: PuckComponent<
 
 export const EssentialRetailAboutSection: YextComponentConfig<AboutProps> =
   {
-    label: "About Section",
+    label: "About",
     fields: aboutFields,
     defaultProps: {
       heading: {
@@ -416,7 +416,7 @@ export const EssentialRetailAboutSection: YextComponentConfig<AboutProps> =
 
 export const config: SectionConfig = {
   id: "EssentialRetailAboutSection",
-  displayName: "About Section",
-  description: "About Section",
+  displayName: "About",
+  description: "About",
   pageSetTypes: ["ENTITY"],
 };

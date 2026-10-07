@@ -357,7 +357,7 @@ export const EssentialRetailPromoSectionComponent: PuckComponent<
 
 export const EssentialRetailPromoSection: YextComponentConfig<PromoProps> =
   {
-    label: "Promo Section",
+    label: "Promo",
     fields: promoFields,
     defaultProps: {
       promoImage: {
@@ -429,7 +429,7 @@ export const EssentialRetailPromoSection: YextComponentConfig<PromoProps> =
 
 export const config: SectionConfig = {
   id: "EssentialRetailPromoSection",
-  displayName: "Promo Section",
-  description: "Promo Section",
+  displayName: "Promo",
+  description: "Promo",
   pageSetTypes: ["ENTITY"],
 };

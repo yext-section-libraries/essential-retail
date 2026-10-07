@@ -181,7 +181,7 @@ const EssentialRetailBannerSectionComponent: PuckComponent<BannerProps> = ({
 
 export const EssentialRetailBannerSection: YextComponentConfig<BannerProps> =
   {
-    label: "Banner Section",
+    label: "Banner",
     fields: bannerFields,
     defaultProps: {
       data: {
@@ -220,7 +220,7 @@ export const EssentialRetailBannerSection: YextComponentConfig<BannerProps> =
 
 export const config: SectionConfig = {
   id: "EssentialRetailBannerSection",
-  displayName: "Banner Section",
-  description: "Banner Section",
+  displayName: "Banner",
+  description: "Banner",
   pageSetTypes: ["ENTITY"],
 };

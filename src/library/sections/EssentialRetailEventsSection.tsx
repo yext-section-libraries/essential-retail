@@ -323,7 +323,7 @@ export const EssentialRetailEventsSectionComponent: PuckComponent<
 
 export const EssentialRetailEventsSection: YextComponentConfig<EventsProps> =
   {
-    label: "Events Section",
+    label: "Events",
     fields: eventsFields,
     defaultProps: {
       backgroundImage: {
@@ -390,7 +390,7 @@ export const EssentialRetailEventsSection: YextComponentConfig<EventsProps> =
 
 export const config: SectionConfig = {
   id: "EssentialRetailEventsSection",
-  displayName: "Events Section",
-  description: "Events Section",
+  displayName: "Events",
+  description: "Events",
   pageSetTypes: ["ENTITY"],
 };

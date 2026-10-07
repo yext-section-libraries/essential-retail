@@ -263,7 +263,7 @@ const EssentialRetailBreadcrumbsSectionComponent: PuckComponent<
 
 export const EssentialRetailBreadcrumbsSection: YextComponentConfig<BreadcrumbsProps> =
   {
-    label: "Breadcrumbs Section",
+    label: "Breadcrumbs",
     fields: breadcrumbsFields,
     defaultProps: {
       section: {
@@ -299,7 +299,7 @@ export const EssentialRetailBreadcrumbsSection: YextComponentConfig<BreadcrumbsP
 
 export const config: SectionConfig = {
   id: "EssentialRetailBreadcrumbsSection",
-  displayName: "Breadcrumbs Section",
-  description: "Breadcrumbs Section",
+  displayName: "Breadcrumbs",
+  description: "Breadcrumbs",
   pageSetTypes: ["ENTITY"],
 };

@@ -686,7 +686,7 @@ export const EssentialRetailNearbySectionComponent: PuckComponent<
 
 export const EssentialRetailNearbySection: YextComponentConfig<NearbyProps> =
   {
-    label: "Nearby Section",
+    label: "Nearby",
     fields: nearbyFields,
     defaultProps: {
       heading: {
@@ -768,7 +768,7 @@ export const EssentialRetailNearbySection: YextComponentConfig<NearbyProps> =
 
 export const config: SectionConfig = {
   id: "EssentialRetailNearbySection",
-  displayName: "Nearby Section",
-  description: "Nearby Section",
+  displayName: "Nearby",
+  description: "Nearby",
   pageSetTypes: ["ENTITY"],
 };

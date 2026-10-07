@@ -1,4 +1,9 @@
-import * as React from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import {
   MaybeRTF,
   getThemeColorCssValue,
@@ -100,7 +105,7 @@ export const getTextStyle = (
   styles: StyledTextValue,
   defaults?: TypographyDefaults,
   color?: ThemeColor,
-): React.CSSProperties => ({
+): CSSProperties => ({
   color: getThemeColorCssValue(color),
   fontFamily:
     styles.fontFamily === "default" ? defaults?.family : styles.fontFamily,
@@ -138,25 +143,53 @@ export const getRichTextStyleOverrides = (
       : styles.textTransform,
 });
 
+/** Applies the same typography and color rules to resolved and raw rich text. */
 export const renderRichText = (
   value: unknown,
   richTextStyleOverrides?: MaybeRTFProps["richTextStyleOverrides"],
-): React.ReactNode => {
-  if (React.isValidElement(value)) {
+): ReactNode => {
+  if (isValidElement<{ style?: CSSProperties; className?: string }>(value)) {
     if (!richTextStyleOverrides) {
       return value;
     }
 
-    return React.cloneElement(
-      value as React.ReactElement<{ style?: React.CSSProperties }>,
-      {
-        style: {
-          ...(value.props as { style?: React.CSSProperties }).style,
-          ...richTextStyleOverrides,
-          color: getThemeColorCssValue(richTextStyleOverrides.color),
-        },
+    return cloneElement(value, {
+      className: `${value.props.className ?? ""} rtf-wrapper`.trim(),
+      style: {
+        ...value.props.style,
+        ...Object.fromEntries(
+          Object.entries(richTextStyleOverrides).filter(
+            ([, styleValue]) => styleValue && styleValue !== "default",
+          ),
+        ),
+        // Rich text rules use these variables to override child paragraph styles.
+        ...Object.fromEntries(
+          ([
+            "fontFamily",
+            "fontSize",
+            "fontWeight",
+            "fontStyle",
+            "textTransform",
+          ] as const)
+            .filter(
+              (property) =>
+                richTextStyleOverrides[property] &&
+                richTextStyleOverrides[property] !== "default",
+            )
+            .map((property) => [
+              `--${property}-body-${property}`,
+              richTextStyleOverrides[property],
+            ]),
+        ),
+        color:
+          typeof richTextStyleOverrides.color === "string" &&
+          /^(#|var\(|rgba?\(|hsla?\(|transparent$|inherit$|currentColor$)/.test(
+            richTextStyleOverrides.color,
+          )
+            ? richTextStyleOverrides.color
+            : getThemeColorCssValue(richTextStyleOverrides.color),
       },
-    );
+    });
   }
 
   const data =

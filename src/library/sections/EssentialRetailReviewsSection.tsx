@@ -516,7 +516,7 @@ export const EssentialRetailReviewsSectionComponent: PuckComponent<
 
 export const EssentialRetailReviewsSection: YextComponentConfig<ReviewsProps> =
   {
-    label: "Reviews Section",
+    label: "Reviews",
     fields: reviewsFields,
     defaultProps: {
       heading: {
@@ -571,7 +571,7 @@ export const EssentialRetailReviewsSection: YextComponentConfig<ReviewsProps> =
 
 export const config: SectionConfig = {
   id: "EssentialRetailReviewsSection",
-  displayName: "Reviews Section",
-  description: "Reviews Section",
+  displayName: "Reviews",
+  description: "Reviews",
   pageSetTypes: ["ENTITY"],
 };
