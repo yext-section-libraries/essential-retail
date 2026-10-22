@@ -105,6 +105,7 @@
     "logoLink": "Logolink",
     "longitude": "Lengte",
     "map": "Kaart",
+    "mapStartingZoom": "Initieel zoomniveau van de kaart",
     "mapboxMapStyle": "Mapbox-kaartstijl",
     "mapStyle": "Kaartstijl",
     "name": "Naam",

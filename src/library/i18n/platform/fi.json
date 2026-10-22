@@ -105,6 +105,7 @@
     "logoLink": "Logolinkki",
     "longitude": "Pituusaste",
     "map": "Kartta",
+    "mapStartingZoom": "Kartan aloituszoomaus",
     "mapboxMapStyle": "Mapbox-karttatyyli",
     "mapStyle": "Karttatyyli",
     "name": "Nimi",

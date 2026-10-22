@@ -105,6 +105,7 @@
     "logoLink": "Logolenke",
     "longitude": "Lengdegrad",
     "map": "Kart",
+    "mapStartingZoom": "Kartets startzoom",
     "mapboxMapStyle": "Mapbox-kartstil",
     "mapStyle": "Kartstil",
     "name": "Navn",
