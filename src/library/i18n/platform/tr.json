@@ -105,6 +105,7 @@
     "logoLink": "Logo bağlantısı",
     "longitude": "Boylam",
     "map": "Harita",
+    "mapStartingZoom": "Haritanın başlangıç yakınlaştırma düzeyi",
     "mapboxMapStyle": "Mapbox Harita Stili",
     "mapStyle": "Harita stili",
     "name": "İsim",

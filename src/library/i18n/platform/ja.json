@@ -105,6 +105,7 @@
     "logoLink": "ロゴリンク",
     "longitude": "経度",
     "map": "地図",
+    "mapStartingZoom": "地図の初期ズームレベル",
     "mapboxMapStyle": "Mapbox マップスタイル",
     "mapStyle": "マップスタイル",
     "name": "名前",

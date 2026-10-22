@@ -105,6 +105,7 @@
     "logoLink": "Logo-Link",
     "longitude": "Längengrad",
     "map": "Karte",
+    "mapStartingZoom": "Anfängliche Zoomstufe der Karte",
     "mapboxMapStyle": "Mapbox-Kartenstil",
     "mapStyle": "Kartenstil",
     "name": "Name",

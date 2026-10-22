@@ -105,6 +105,7 @@
     "logoLink": "Logolink",
     "longitude": "Længde",
     "map": "Kort",
+    "mapStartingZoom": "Kortets startzoom",
     "mapboxMapStyle": "Mapbox-kortstil",
     "mapStyle": "Kortstil",
     "name": "Navn",

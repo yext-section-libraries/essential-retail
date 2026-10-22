@@ -105,6 +105,7 @@
     "logoLink": "Logo Link",
     "longitude": "Longitude",
     "map": "Map",
+    "mapStartingZoom": "Map Starting Zoom",
     "mapboxMapStyle": "Mapbox Map Style",
     "mapStyle": "Map Style",
     "name": "Name",
