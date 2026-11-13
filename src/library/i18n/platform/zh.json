@@ -37,6 +37,7 @@
     "address": "地址",
     "analytics": "分析",
     "answerStyles": "回答样式",
+    "autoSearchOnMapMove": "地图移动自动搜索",
     "backgroundColor": "背景颜色",
     "backgroundImage": "背景图片",
     "bannerText": "横幅文本",

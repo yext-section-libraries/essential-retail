@@ -37,6 +37,7 @@
     "address": "Cím",
     "analytics": "Analitika",
     "answerStyles": "Válasz stílusai",
+    "autoSearchOnMapMove": "Automatikus keresés a térképen, mozgás",
     "backgroundColor": "Háttérszín",
     "backgroundImage": "Háttérkép",
     "bannerText": "Szalagszöveg",

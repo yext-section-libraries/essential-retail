@@ -37,6 +37,7 @@
     "address": "Endereço",
     "analytics": "Análise",
     "answerStyles": "Estilos de resposta",
+    "autoSearchOnMapMove": "Pesquisar automaticamente no movimento do mapa",
     "backgroundColor": "Cor de fundo",
     "backgroundImage": "Imagem de fundo",
     "bannerText": "Texto do banner",

@@ -37,6 +37,7 @@
     "address": "Adress",
     "analytics": "Analys",
     "answerStyles": "Svarsstilar",
+    "autoSearchOnMapMove": "Sök automatiskt på kartrörelse",
     "backgroundColor": "Bakgrundsfärg",
     "backgroundImage": "Bakgrundsbild",
     "bannerText": "Bannertext",

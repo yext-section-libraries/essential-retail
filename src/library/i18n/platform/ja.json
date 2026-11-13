@@ -37,6 +37,7 @@
     "address": "住所",
     "analytics": "分析",
     "answerStyles": "回答のスタイル",
+    "autoSearchOnMapMove": "地図移動時に自動検索",
     "backgroundColor": "背景色",
     "backgroundImage": "背景画像",
     "bannerText": "バナーテキスト",
