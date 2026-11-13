@@ -37,6 +37,7 @@
     "address": "Adresa",
     "analytics": "Analytika",
     "answerStyles": "Štýly odpovede",
+    "autoSearchOnMapMove": "Automaticky hľadať pri pohybe mapy",
     "backgroundColor": "Farba pozadia",
     "backgroundImage": "Obrázok na pozadí",
     "bannerText": "Text bannera",

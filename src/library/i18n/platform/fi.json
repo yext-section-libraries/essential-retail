@@ -37,6 +37,7 @@
     "address": "Osoite",
     "analytics": "Analytiikka",
     "answerStyles": "Vastauksen tyylit",
+    "autoSearchOnMapMove": "Hae automaattisesti kartan liikkeestä",
     "backgroundColor": "Taustaväri",
     "backgroundImage": "Taustakuva",
     "bannerText": "Banneriteksti",

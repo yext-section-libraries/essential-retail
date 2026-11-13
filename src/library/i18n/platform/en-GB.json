@@ -37,6 +37,7 @@
     "address": "Address",
     "analytics": "Analytics",
     "answerStyles": "Answer Styles",
+    "autoSearchOnMapMove": "Automatically Search on Map Movement",
     "backgroundColor": "Background Color",
     "backgroundImage": "Background Image",
     "bannerText": "Banner Text",
