@@ -34,6 +34,7 @@
   "locationsWithinDistanceOf_other": "{{count}} Standorte im Umkreis von {{distance}} {{unit}} von „{{name}}“",
   "logo": "Logo",
   "mapRequiresOptIn": "Diese Karte kann nur angezeigt werden, wenn Cookies aktiviert sind",
+  "mapRequiresWebGL": "Die Karte ist nicht verfügbar, weil WebGL nicht verfügbar ist.",
   "mapboxEnvVarRequiredEditor": "Fügen Sie die Mapbox-Umgebungsvariable hinzu, um die Karte der Geschäfte in der Nähe darzustellen.",
   "mile_one": "Meile",
   "mile_other": "Meilen",

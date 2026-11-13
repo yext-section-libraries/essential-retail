@@ -38,6 +38,7 @@
   "locationsWithinDistanceOf_other": "{{count}} locații pe o rază de {{distance}} {{unit}} de „{{name}}”",
   "logo": "Logo",
   "mapRequiresOptIn": "Această hartă poate fi afișată numai dacă cookie-urile sunt activate",
+  "mapRequiresWebGL": "Harta nu este disponibilă deoarece WebGL nu este disponibil.",
   "mapboxEnvVarRequiredEditor": "Adăugați variabila de mediu Mapbox pentru a afișa harta magazinelor din apropiere.",
   "mile_few": "mile",
   "mile_one": "milă",
