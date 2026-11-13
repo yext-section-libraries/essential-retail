@@ -38,6 +38,7 @@
   "locationsWithinDistanceOf_other": "{{count}} locais dentro de {{distance}} {{unit}} de \"{{name}}\"",
   "logo": "Logotipo",
   "mapRequiresOptIn": "Este mapa só pode ser exibido se os cookies estiverem ativados",
+  "mapRequiresWebGL": "O mapa não está disponível porque o WebGL não está disponível.",
   "mapboxEnvVarRequiredEditor": "Adicione a variável de ambiente do Mapbox para apresentar o mapa das lojas próximas.",
   "mile_many": "milhas",
   "mile_one": "milha",

@@ -42,6 +42,7 @@
   "locationsWithinDistanceOf_other": "{{count}} míst ve vzdálenosti {{distance}} {{unit}} od „{{name}}“",
   "logo": "Logo",
   "mapRequiresOptIn": "Tuto mapu lze zobrazit pouze v případě, že jsou povoleny soubory cookie",
+  "mapRequiresWebGL": "Mapa není dostupná, protože WebGL není k dispozici.",
   "mapboxEnvVarRequiredEditor": "Přidejte proměnnou prostředí Mapbox, aby se vykreslila mapa okolních prodejen.",
   "mile_few": "míle",
   "mile_many": "mil",

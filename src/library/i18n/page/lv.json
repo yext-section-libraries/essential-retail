@@ -37,6 +37,7 @@
   "locationsWithinDistanceOf_zero": "{{count}} atrašanās vietas {{distance}} {{unit}} rādiusā no \"{{name}}\"",
   "logo": "Logotips",
   "mapRequiresOptIn": "Šo karti var parādīt tikai tad, ja ir iespējoti sīkfaili",
+  "mapRequiresWebGL": "Karte nav pieejama, jo WebGL nav pieejams.",
   "mapboxEnvVarRequiredEditor": "Pievienojiet Mapbox vides mainīgo, lai parādītu tuvumā esošo veikalu karti.",
   "mile_one": "jūdze",
   "mile_other": "jūdzes",
