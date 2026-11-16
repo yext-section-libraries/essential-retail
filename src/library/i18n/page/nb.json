@@ -34,6 +34,7 @@
   "locationsWithinDistanceOf_other": "{{count}} steder innenfor {{distance}} {{unit}} fra \"{{name}}\"",
   "logo": "Logo",
   "mapRequiresOptIn": "Dette kartet kan bare vises hvis informasjonskapsler er aktivert",
+  "mapRequiresWebGL": "Kartet er ikke tilgjengelig fordi WebGL ikke er tilgjengelig.",
   "mapboxEnvVarRequiredEditor": "Legg til Mapbox-miljøvariabelen for å vise kartet over butikker i nærheten.",
   "mile_one": "mil",
   "mile_other": "mil",
